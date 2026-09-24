@@ -6,9 +6,7 @@ const {
   getAttendanceSummary,
   updateAttendance,
 } = require('../controllers/attendanceController');
-const { protect } = require('../middleware/auth');
-const { authorize } = require('../middleware/role.middleware');
-
+const { protect, authorize } = require('../middleware/auth');
 // All attendance routes require authentication
 router.use(protect);
 

@@ -7,8 +7,7 @@ const {
   updateStudent,
   deleteStudent,
 } = require('../controllers/studentController');
-const { protect } = require('../middleware/auth');
-const { authorize } = require('../middleware/role.middleware');
+const { protect, authorize } = require('../middleware/auth');
 
 // All student routes require authentication
 router.use(protect);

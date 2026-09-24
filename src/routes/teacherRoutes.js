@@ -7,8 +7,7 @@ const {
   updateTeacher,
   deleteTeacher,
 } = require('../controllers/teacherController');
-const { protect } = require('../middleware/auth');
-const { authorize } = require('../middleware/role.middleware');
+const { protect, authorize } = require('../middleware/auth');
 
 // All teacher routes require authentication
 router.use(protect);
