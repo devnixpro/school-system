@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const generateToken = require('../utils/generateToken');
 
 // @desc    Register new user
 // @route   POST /api/auth/register
@@ -18,9 +18,7 @@ const register = async (req, res, next) => {
 
     const user = await User.create({ name, email, password, role });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRE,
-    });
+    const token = generateToken(user._id);
 
     res.status(201).json({
       success: true,
@@ -75,9 +73,7 @@ const login = async (req, res, next) => {
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRE,
-    });
+    const token = generateToken(user._id);
 
     res.status(200).json({
       success: true,

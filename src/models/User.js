@@ -21,11 +21,11 @@ const userSchema = new mongoose.Schema(
       minlength: [6, 'Password must be at least 6 characters'],
       select: false,
     },
-    role: {
-      type: String,
-      enum: ['admin', 'teacher', 'student'],
-      default: 'student',
-    },
+     role: {
+  type: String,
+  enum: ['superadmin', 'admin', 'teacher', 'student'],
+  default: 'student',
+},
     isActive: {
       type: Boolean,
       default: true,
