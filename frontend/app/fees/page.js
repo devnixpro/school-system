@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function FeesRedirect() {
-  redirect("/admin/fees");
+  redirect("/dashboard/admin/fees");
 }

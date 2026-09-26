@@ -22,7 +22,7 @@ export default function FeeStructurePage() {
     try {
       const res = await feeService.bulkCreate(payload);
       setRecent(res.data || []);
-      if (confirm(`${res.count} invoices created! View them now?`)) router.push("/admin/fees/invoices");
+      if (confirm(`${res.count} invoices created! View them now?`)) router.push("/dashboard/admin/fees/invoices");
     } catch (err) { alert(err.response?.data?.message || "Failed to create invoices"); }
   };
 
@@ -30,7 +30,7 @@ export default function FeeStructurePage() {
     <main className="p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
       <header>
         <h1 className="text-3xl font-bold text-gray-900">Generate Fee Invoices</h1>
-        <p className="text-gray-500 text-sm mt-1">Select students, set an amount and due date — invoices are created instantly.</p>
+        <p className="text-gray-500 text-sm mt-1">Select students, set an amount and due date ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â invoices are created instantly.</p>
       </header>
 
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
