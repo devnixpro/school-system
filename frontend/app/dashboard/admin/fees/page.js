@@ -48,7 +48,7 @@ export default function AdminFeesPage() {
           <h1 className="text-3xl font-bold text-gray-900">Fee Management</h1>
           <p className="text-gray-500 text-sm mt-1">Track invoices, payments, and receipts across your school.</p>
         </div>
-        <Link href="/admin/fees/structure" className="inline-flex items-center justify-center font-semibold rounded-xl px-6 py-3 bg-blue-600 text-white hover:bg-blue-700">
+        <Link href="/dashboard/admin/fees/structure" className="inline-flex items-center justify-center font-semibold rounded-xl px-6 py-3 bg-blue-600 text-white hover:bg-blue-700">
           + Generate Invoices
         </Link>
       </header>
@@ -85,7 +85,7 @@ export default function AdminFeesPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center text-gray-400">Loading…</div>
+        <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center text-gray-400">Loadingâ€¦</div>
       ) : (
         <InvoiceTable fees={fees} onPay={setSelected} onDelete={handleDelete} onViewReceipt={handleReceipt} />
       )}

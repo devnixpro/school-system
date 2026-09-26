@@ -44,7 +44,7 @@ export default function InvoicesPage() {
       </header>
 
       {loading ? (
-        <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center text-gray-400">Loading…</div>
+        <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center text-gray-400">Loadingâ€¦</div>
       ) : (
         <InvoiceTable fees={fees} onPay={setSelected} onViewReceipt={handleReceipt} />
       )}
