@@ -1,11 +1,13 @@
 "use client";
+
+import { memo } from "react";
 import PaymentStatusBadge from "./PaymentStatusBadge";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 const formatDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
-export default function FeeCard({ fee, onPay, onViewReceipt }) {
+function FeeCard({ fee, onPay, onViewReceipt }) {
   const accent =
     fee.status === "paid"    ? "border-l-green-500" :
     fee.status === "overdue" ? "border-l-red-500"   : "border-l-yellow-500";
@@ -41,12 +43,20 @@ export default function FeeCard({ fee, onPay, onViewReceipt }) {
 
       <div className="px-5 pb-5 mt-auto flex gap-2">
         {fee.status !== "paid" && onPay && (
-          <button onClick={() => onPay(fee)} className="flex-1 bg-blue-600 text-white font-semibold rounded-xl px-4 py-2 text-sm hover:bg-blue-700 transition">
+          <button
+            onClick={() => onPay(fee)}
+            className="flex-1 bg-blue-600 text-white font-semibold rounded-xl px-4 py-2 text-sm hover:bg-blue-700 transition"
+          >
             Mark Paid
           </button>
         )}
         {onViewReceipt && (
-          <button onClick={() => onViewReceipt(fee)} className={`font-semibold rounded-xl px-4 py-2 text-sm bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 transition ${fee.status === "paid" ? "flex-1" : ""}`}>
+          <button
+            onClick={() => onViewReceipt(fee)}
+            className={`font-semibold rounded-xl px-4 py-2 text-sm bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 transition ${
+              fee.status === "paid" ? "flex-1" : ""
+            }`}
+          >
             Receipt
           </button>
         )}
@@ -54,3 +64,5 @@ export default function FeeCard({ fee, onPay, onViewReceipt }) {
     </article>
   );
 }
+
+export default memo(FeeCard);
