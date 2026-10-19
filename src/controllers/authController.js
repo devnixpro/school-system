@@ -27,13 +27,12 @@ const register = async (req, res, next) => {
         message: 'Password must be at least 6 characters.',
       });
     }
-
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide a valid email address.',
-      });
-    }
+return res.status(400).json({
+success: false,
+message: 'Please provide a valid email address.',
+});
+}
 
     if (!mongoose.isValidObjectId(schoolId)) {
       return res.status(400).json({
