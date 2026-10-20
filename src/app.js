@@ -15,6 +15,9 @@ const themeRoutes = require('./routes/theme.routes');
 const adminRoutes = require('./routes/admin.routes');
 const classRoutes = require('./routes/class.routes');
 const parentRoutes = require('./routes/parent.routes');
+const timetableRoutes = require('./routes/timetableRoutes');
+const noticeRoutes = require('./routes/noticeRoutes');
+const feeRoutes = require('./routes/fee.routes');
 
 const app = express();
 
@@ -40,6 +43,9 @@ app.get('/', (req, res) => {
       attendance: '/api/attendance',
       classes: '/api/classes',
       parent: '/api/parent',
+      fees: '/api/fees',
+      timetable: '/api/timetable',
+      notices: '/api/notices',
     },
   });
 });
@@ -54,6 +60,9 @@ app.use('/api/classes', classRoutes);
 app.use('/api/themes', themeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/parent', parentRoutes);
+app.use('/api/timetable', timetableRoutes);
+app.use('/api/notices', noticeRoutes);
+app.use('/api/fees', feeRoutes);
 
 // 404 Handler
 app.use((req, res) => {
@@ -67,4 +76,3 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 module.exports = app;
-
