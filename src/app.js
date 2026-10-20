@@ -1,8 +1,9 @@
+
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+
 const errorHandler = require('./middleware/errorHandler');
-const classRoutes = require('./routes/class.routes');
 
 // Route imports
 const authRoutes = require('./routes/authRoutes');
@@ -12,6 +13,8 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 const superadminRoutes = require('./routes/superadmin.routes');
 const themeRoutes = require('./routes/theme.routes');
 const adminRoutes = require('./routes/admin.routes');
+const classRoutes = require('./routes/class.routes');
+const parentRoutes = require('./routes/parent.routes');
 
 const app = express();
 
@@ -35,6 +38,8 @@ app.get('/', (req, res) => {
       students: '/api/students',
       teachers: '/api/teachers',
       attendance: '/api/attendance',
+      classes: '/api/classes',
+      parent: '/api/parent',
     },
   });
 });
@@ -48,12 +53,13 @@ app.use('/api/superadmin', superadminRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/themes', themeRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/parent', parentRoutes);
 
 // 404 Handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: "Route  not found",
+    message: 'Route not found',
   });
 });
 
@@ -61,3 +67,4 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 module.exports = app;
+

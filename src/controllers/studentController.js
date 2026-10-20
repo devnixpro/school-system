@@ -1,7 +1,23 @@
+
 const mongoose = require('mongoose');
 
 const Student = require('../models/Student');
 const School = require('../models/School.model');
+const User = require('../models/User');
+
+// Validate that the parent belongs to the same school and is active.
+const validateParent = async (parentId, schoolId) => {
+  if (!mongoose.Types.ObjectId.isValid(parentId)) {
+    return null;
+  }
+
+  return User.findOne({
+    _id: parentId,
+    role: 'parent',
+    school: schoolId,
+    isActive: true,
+  });
+};
 
 // @desc    Register a new student
 // @route   POST /api/students
@@ -38,8 +54,23 @@ const createStudent = async (req, res, next) => {
       section,
       guardianName,
       guardianPhone,
+      parentId,
       isActive,
     } = req.body;
+
+    let parent = null;
+
+    if (parentId !== undefined && parentId !== null && parentId !== '') {
+      parent = await validateParent(parentId, schoolId);
+
+      if (!parent) {
+        return res.status(400).json({
+          success: false,
+          message:
+            'Invalid parent. The parent must have an active account in your school.',
+        });
+      }
+    }
 
     const student = await Student.create({
       name,
@@ -53,6 +84,7 @@ const createStudent = async (req, res, next) => {
       section,
       guardianName,
       guardianPhone,
+      parent: parent ? parent._id : null,
       ...(isActive !== undefined ? { isActive } : {}),
       school: schoolId,
     });
@@ -127,6 +159,7 @@ const getAllStudents = async (req, res, next) => {
     const total = await Student.countDocuments(filter);
 
     const students = await Student.find(filter)
+      .populate('parent', 'name email')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(pageLimit);
@@ -168,7 +201,7 @@ const getStudentById = async (req, res, next) => {
     const student = await Student.findOne({
       _id: req.params.id,
       school: schoolId,
-    });
+    }).populate('parent', 'name email');
 
     if (!student) {
       return res.status(404).json({
@@ -230,6 +263,27 @@ const updateStudent = async (req, res, next) => {
       }
     }
 
+    // Link, change, or unlink the parent account.
+    if (req.body.parentId !== undefined) {
+      const { parentId } = req.body;
+
+      if (parentId === null || parentId === '') {
+        updates.parent = null;
+      } else {
+        const parent = await validateParent(parentId, schoolId);
+
+        if (!parent) {
+          return res.status(400).json({
+            success: false,
+            message:
+              'Invalid parent. The parent must have an active account in your school.',
+          });
+        }
+
+        updates.parent = parent._id;
+      }
+    }
+
     const student = await Student.findOneAndUpdate(
       {
         _id: req.params.id,
@@ -240,7 +294,7 @@ const updateStudent = async (req, res, next) => {
         new: true,
         runValidators: true,
       }
-    );
+    ).populate('parent', 'name email');
 
     if (!student) {
       return res.status(404).json({
@@ -308,3 +362,4 @@ module.exports = {
   updateStudent,
   deleteStudent,
 };
+
