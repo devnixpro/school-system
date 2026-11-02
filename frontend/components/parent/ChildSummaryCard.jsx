@@ -33,17 +33,17 @@ export default function ChildSummaryCard({ child, summary }) {
         <Stat
           label="Attendance"
           value={`${summary.attendancePercentage}%`}
-          href="/dashboard/parent/child-attendance"
+          href="/parent/child-attendance"
         />
         <Stat
           label="Fees due"
           value={money(summary.pendingFees)}
-          href="/dashboard/parent/child-fees"
+          href="/parent/child-fees"
         />
         <Stat
           label="Homework due"
           value={summary.homeworkDue}
-          href="/dashboard/parent/child-homework"
+          href="/parent/child-homework"
         />
       </div>
     </section>

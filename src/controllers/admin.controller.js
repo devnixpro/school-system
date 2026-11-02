@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
 const Class = require('../models/Class.model');
@@ -69,12 +70,27 @@ const getClasses = async (req, res, next) => {
 const createParent = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
+    const studentIds = req.body.studentIds || [];
     const schoolId = req.user.school;
 
-    if (!name?.trim() || !email?.trim() || !password) {
+    if (
+      typeof name !== 'string' ||
+      !name.trim() ||
+      typeof email !== 'string' ||
+      !email.trim() ||
+      typeof password !== 'string' ||
+      !password
+    ) {
       return res.status(400).json({
         success: false,
         message: 'Name, email, and password are required.',
+      });
+    }
+
+    if (!Array.isArray(studentIds) || studentIds.some((id) => !mongoose.isValidObjectId(id))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Student IDs must be a list of valid IDs.',
       });
     }
 
@@ -85,11 +101,41 @@ const createParent = async (req, res, next) => {
       });
     }
 
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address.',
+      });
+    }
+
     if (!schoolId) {
       return res.status(403).json({
         success: false,
         message: 'No school is assigned to this admin.',
       });
+    }
+
+    const uniqueStudentIds = [...new Set(studentIds.map(String))];
+    if (uniqueStudentIds.length) {
+      const students = await Student.find({
+        _id: { $in: uniqueStudentIds },
+        school: schoolId,
+        isActive: true,
+      }).select('_id parent');
+
+      if (students.length !== uniqueStudentIds.length) {
+        return res.status(400).json({
+          success: false,
+          message: 'Every selected student must be active and belong to your school.',
+        });
+      }
+
+      if (students.some((student) => student.parent)) {
+        return res.status(409).json({
+          success: false,
+          message: 'One or more selected students are already linked to a parent.',
+        });
+      }
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -115,6 +161,39 @@ const createParent = async (req, res, next) => {
       isEmailVerified: true,
     });
 
+    if (uniqueStudentIds.length) {
+      try {
+        const result = await Student.updateMany(
+          {
+            _id: { $in: uniqueStudentIds },
+            school: schoolId,
+            isActive: true,
+            parent: null,
+          },
+          { $set: { parent: parent._id } }
+        );
+
+        if (result.modifiedCount !== uniqueStudentIds.length) {
+          await Student.updateMany(
+            { _id: { $in: uniqueStudentIds }, parent: parent._id },
+            { $set: { parent: null } }
+          );
+          await User.deleteOne({ _id: parent._id });
+          return res.status(409).json({
+            success: false,
+            message: 'A student was linked to another parent while this account was being created. Please retry.',
+          });
+        }
+      } catch (error) {
+        await Student.updateMany(
+          { _id: { $in: uniqueStudentIds }, parent: parent._id },
+          { $set: { parent: null } }
+        );
+        await User.deleteOne({ _id: parent._id });
+        throw error;
+      }
+    }
+
     return res.status(201).json({
       success: true,
       message: 'Parent account created successfully.',
@@ -123,6 +202,7 @@ const createParent = async (req, res, next) => {
         name: parent.name,
         email: parent.email,
         role: parent.role,
+        studentIds: uniqueStudentIds,
       },
     });
   } catch (error) {

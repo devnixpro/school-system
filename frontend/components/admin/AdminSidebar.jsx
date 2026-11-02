@@ -33,6 +33,11 @@ const NAV_ITEMS = [
     href: '/dashboard/', 
     icon: Users 
   },
+  {
+    name: 'Parents',
+    href: '/dashboard/admin/parents',
+    icon: Users
+  },
   { 
     name: 'Classes & Academics', 
     href: '/dashboard/', 
@@ -47,7 +52,7 @@ const NAV_ITEMS = [
   { 
     name: 'Exams & Results', 
     subLabel: 'My Classes',
-    href: '/dashboard/', 
+    href: '/dashboard/admin/exams',
     icon: FileCheck 
   },
   { 
@@ -58,7 +63,7 @@ const NAV_ITEMS = [
   },
   { 
     name: 'Homework & Assignments', 
-    href: '/dashboard/', 
+    href: '/dashboard/admin/homework',
     icon: ClipboardPen 
   },
   { 

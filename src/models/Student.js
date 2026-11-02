@@ -52,11 +52,11 @@ const studentSchema = new mongoose.Schema(
       index: true,
     },
     parent: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'User',
-  default: null,
-  index: true,
-},
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+      index: true,
+    },
     guardianName: {
       type: String,
       trim: true,

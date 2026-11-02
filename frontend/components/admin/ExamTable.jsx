@@ -34,13 +34,13 @@ export default function ExamTable({ exams = [], onEdit, onDelete, onPublishResul
                 <td className="px-5 py-3.5 text-gray-600">{exam.className}</td>
                 <td className="px-5 py-3.5 text-gray-600">{formatDate(exam.date)}</td>
                 <td className="px-5 py-3.5 text-right text-gray-800">
-                  {exam.status === "result-declared" ? `${exam.obtainedMarks}/${exam.totalMarks}` : `— /${exam.totalMarks}`}
+                  {exam.results?.length ? `${exam.results.length} published` : `— /${exam.totalMarks}`}
                 </td>
                 <td className="px-5 py-3.5"><ExamStatusBadge status={exam.status} size="sm" /></td>
                 <td className="px-5 py-3.5 text-right whitespace-nowrap">
                   <div className="inline-flex items-center gap-1">
-                    {onPublishResult && exam.status !== "result-declared" && (
-                      <button onClick={() => onPublishResult(exam)} className="text-brand-blue hover:bg-blue-50 px-2 py-1 rounded-lg text-xs font-semibold">Publish Result</button>
+                    {onPublishResult && (
+                      <button onClick={() => onPublishResult(exam)} className="text-brand-blue hover:bg-blue-50 px-2 py-1 rounded-lg text-xs font-semibold">{exam.results?.length ? "Manage Results" : "Publish Result"}</button>
                     )}
                     {onEdit && (
                       <button onClick={() => onEdit(exam)} className="text-gray-500 hover:text-brand-blue px-2 py-1 rounded-lg hover:bg-gray-100 text-xs font-medium">Edit</button>

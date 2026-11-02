@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Page change karne ke liye
+import api from "@/services/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,33 +21,25 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Backend API ko call karna
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await api.post("/auth/login", { email, password });
+      const data = response.data;
+      const user = data.data;
+      const destinations = {
+        admin: "/dashboard/admin",
+        teacher: "/dashboard/teacher",
+        student: "/dashboard/student",
+        parent: "/parent",
+        superadmin: "/superadmin",
+      };
+      const destination = destinations[user?.role];
+      if (!destination) throw new Error("Your account has an unsupported role.");
 
-      const data = await response.json();
-
-      // Agar response theek nahi hai (jaise galat password)
-      if (!response.ok) {
-        throw new Error(data.message || "Invalid credentials");
-      }
-
-      // Success! Token save karein aur dashboard par bhejein
-      localStorage.setItem("token", data.token); // Token save kiya
-      localStorage.setItem("user", JSON.stringify(data.user)); // User data save kiya
-      
-      alert("Login Successful!");
-      
-      // Yahan aap role ke hisaab se redirect kar sakte hain (abhi ke liye superadmin par bhej rahe hain)
-      router.push("/superadmin"); 
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(user));
+      router.replace(destination);
 
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message || "Unable to sign in.");
     } finally {
       setLoading(false);
     }
@@ -133,7 +126,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-6">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-blue-600 hover:underline font-medium">
             Create one
           </Link>
