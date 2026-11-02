@@ -5,7 +5,8 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, PieChart, Pie, Cell,
 } from "recharts";
-import api from "@/services/api"; // Backend connect karne ke liye import kiya
+import api from "@/services/api";
+import { exportToCsv } from "@/utils/exportToCsv";
 
 const currency = (value) => new Intl.NumberFormat("en-PK", {
   style: "currency", currency: "PKR", notation: "compact", maximumFractionDigits: 1,
@@ -16,6 +17,10 @@ const fullCurrency = (value) => new Intl.NumberFormat("en-PK", {
 }).format(Number(value) || 0);
 
 const COLORS = ["#0077F5", "#10B981", "#F59E0B", "#94A3B8"];
+const VIEWS = [
+  { value: "table", label: "Table" },
+  { value: "grouped", label: "Grouped" },
+];
 
 function paymentMethod(fee) {
   const value = String(fee.paymentMethod || fee.method || "").toLowerCase();
@@ -24,8 +29,26 @@ function paymentMethod(fee) {
   return "Unclassified";
 }
 
+function formatMonth(fee) {
+  if (fee.month) return fee.month;
+  const rawDate = fee.paidAt || fee.paymentDate || fee.paidDate || fee.updatedAt;
+  const date = rawDate ? new Date(rawDate) : null;
+  return date && !Number.isNaN(date.getTime())
+    ? date.toLocaleDateString("en-PK", { month: "long", year: "numeric" })
+    : "Unknown";
+}
+
 function monthKey(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+async function fetchPaidFees() {
+  const response = await api.get("/fees", { params: { status: "paid", limit: 200 } });
+  const items = response.data?.data;
+  if (!Array.isArray(items)) {
+    throw new Error("The payments response has an unexpected format.");
+  }
+  return items.filter((fee) => String(fee.status || "").toLowerCase() === "paid");
 }
 
 export default function AdminPaymentsPage() {
@@ -33,26 +56,37 @@ export default function AdminPaymentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [view, setView] = useState("table");
+  const [methodFilter, setMethodFilter] = useState("all");
+  const [monthFilter, setMonthFilter] = useState("");
+  const [receiptError, setReceiptError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      // Yahan humne api.get use kiya hai taake backend se baat ho
-      const response = await api.get("/fees?status=paid&limit=200");
-      const data = response.data;
-      
-      const items = Array.isArray(data) ? data : data.fees || data.invoices || data.data || [];
-      setFees(items.filter((fee) => String(fee.status || "").toLowerCase() === "paid"));
+      setFees(await fetchPaidFees());
     } catch (err) {
-      console.error(err);
-      setError(err.message || "Unable to load payment data.");
+      setError(err.response?.data?.message || err.message || "Unable to load payment data.");
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    let active = true;
+    fetchPaidFees()
+      .then((items) => {
+        if (active) setFees(items);
+      })
+      .catch((err) => {
+        if (active) setError(err.response?.data?.message || err.message || "Unable to load payment data.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
 
   const total = fees.reduce((sum, fee) => sum + (Number(fee.amount) || 0), 0);
   const cashFees = fees.filter((fee) => paymentMethod(fee) === "Cash");
@@ -91,11 +125,58 @@ export default function AdminPaymentsPage() {
     { name: "Unclassified", value: Math.max(0, unknownTotal) },
   ].filter((item) => item.value > 0);
 
-  const filtered = fees.filter((fee) => {
+  const filtered = useMemo(() => fees.filter((fee) => {
     const student = fee.student?.name || fee.studentName || "Student";
     const invoice = fee.invoiceNumber || fee.invoiceNo || fee._id || fee.id || "";
-    return `${student} ${invoice} ${paymentMethod(fee)}`.toLowerCase().includes(search.toLowerCase());
-  });
+    const matchesSearch = `${student} ${invoice} ${paymentMethod(fee)}`
+      .toLowerCase()
+      .includes(search.trim().toLowerCase());
+    const matchesMethod = methodFilter === "all" ||
+      paymentMethod(fee).toLowerCase() === methodFilter;
+    const matchesMonth = !monthFilter ||
+      formatMonth(fee).toLowerCase().includes(monthFilter.trim().toLowerCase());
+    return matchesSearch && matchesMethod && matchesMonth;
+  }), [fees, search, methodFilter, monthFilter]);
+
+  const groupedByMonth = useMemo(() => {
+    const groups = new Map();
+    filtered.forEach((fee) => {
+      const month = formatMonth(fee);
+      if (!groups.has(month)) groups.set(month, []);
+      groups.get(month).push(fee);
+    });
+    return [...groups.entries()].sort(([first], [second]) => second.localeCompare(first));
+  }, [filtered]);
+
+  const handleExport = () => {
+    exportToCsv("payment-history", filtered, [
+      { label: "Invoice", value: (fee) => fee.invoiceNumber || fee.invoiceNo || fee._id || fee.id },
+      { label: "Student", value: (fee) => fee.student?.name || fee.studentName || "" },
+      { label: "Amount", value: (fee) => fee.amount },
+      { label: "Month", value: formatMonth },
+      { label: "Paid date", value: (fee) => fee.paidAt || fee.paymentDate || fee.paidDate || fee.updatedAt || "" },
+      { label: "Method", value: paymentMethod },
+    ]);
+  };
+
+  const handleReceipt = async (fee) => {
+    setReceiptError("");
+    try {
+      const id = fee._id || fee.id;
+      if (!id) throw new Error("Invoice ID is missing.");
+      const response = await api.get(`/fees/${encodeURIComponent(id)}/receipt`, {
+        responseType: "blob",
+      });
+      const url = URL.createObjectURL(response.data);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `receipt-${id}.pdf`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (requestError) {
+      setReceiptError(requestError.response?.data?.message || requestError.message || "Unable to download the receipt.");
+    }
+  };
 
   const cards = [
     { title: "Total collected", value: total, hint: `${fees.length} recorded payments`, icon: "↗", color: "bg-blue-50 text-brand" },
@@ -212,14 +293,67 @@ export default function AdminPaymentsPage() {
               <h2 className="text-lg font-bold text-navy">Recent payments</h2>
               <p className="mt-1 text-sm text-gray-500">Recorded paid invoices from your fee records.</p>
             </div>
-            <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search student or invoice..." className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-blue-100 sm:max-w-xs" />
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+              <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search student or invoice..." className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-blue-100 sm:w-auto" />
+              <input type="text" value={monthFilter} onChange={(event) => setMonthFilter(event.target.value)} placeholder="Filter by month" className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-blue-100 sm:w-40" />
+              <select value={methodFilter} onChange={(event) => setMethodFilter(event.target.value)} className="rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm text-gray-700">
+                <option value="all">All methods</option>
+                <option value="cash">Cash</option>
+                <option value="online">Online</option>
+                <option value="unclassified">Unclassified</option>
+              </select>
+              <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1">
+                {VIEWS.map((option) => (
+                  <button key={option.value} type="button" onClick={() => setView(option.value)} aria-pressed={view === option.value} className={`rounded-lg px-3 py-2 text-sm font-medium ${view === option.value ? "bg-gray-900 text-white" : "text-gray-600 hover:bg-gray-50"}`}>
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <button type="button" onClick={handleExport} disabled={!filtered.length} className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-40">
+                Export CSV
+              </button>
+            </div>
           </div>
+
+          {receiptError && <p role="alert" className="border-b border-rose-100 bg-rose-50 px-5 py-3 text-sm text-rose-700">{receiptError}</p>}
 
           {loading ? <div className="space-y-3 p-6">{[1, 2, 3, 4].map((n) => <div key={n} className="h-14 animate-pulse rounded-xl bg-gray-100" />)}</div> : filtered.length === 0 ? (
             <div className="px-6 py-16 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-xl text-gray-500">₨</div>
               <h3 className="mt-3 font-bold text-navy">No matching payments</h3>
               <p className="mt-1 text-sm text-gray-500">Recorded payments will appear here after invoices are marked paid.</p>
+            </div>
+          ) : view === "grouped" ? (
+            <div className="space-y-5 p-4 sm:p-6">
+              {groupedByMonth.map(([month, items]) => (
+                <section key={month} className="overflow-hidden rounded-xl border border-gray-100">
+                  <header className="flex flex-wrap items-center justify-between gap-2 bg-gray-50 px-4 py-3">
+                    <h3 className="font-semibold text-navy">{month}</h3>
+                    <span className="text-sm text-gray-500">
+                      {items.length} payment{items.length === 1 ? "" : "s"} · {fullCurrency(items.reduce((sum, fee) => sum + (Number(fee.amount) || 0), 0))}
+                    </span>
+                  </header>
+                  <ul className="divide-y divide-gray-100">
+                    {items.map((fee) => {
+                      const id = fee._id || fee.id;
+                      const student = fee.student?.name || fee.studentName || "Student";
+                      const invoice = fee.invoiceNumber || fee.invoiceNo || `INV-${id}`;
+                      return (
+                        <li key={id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
+                          <div className="min-w-0">
+                            <p className="truncate font-semibold text-navy">{student}</p>
+                            <p className="mt-1 text-xs text-gray-500">{invoice} · {paymentMethod(fee)}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold tabular-nums text-navy">{fullCurrency(fee.amount)}</span>
+                            <button type="button" onClick={() => handleReceipt(fee)} className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">Receipt</button>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              ))}
             </div>
           ) : (
             <div className="overflow-x-auto">
