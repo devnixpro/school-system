@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import api from "@/services/api";
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Users, 
-  BookOpen, 
-  Loader2, 
-  AlertCircle, 
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  BookOpen,
+  Loader2,
+  AlertCircle,
   CalendarCheck,
   Download,
   Headphones
@@ -37,7 +37,7 @@ export default function TeacherTimetablePage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Teacher ke liye API call (Aap yahan teacher ID ya teacher name pass kar sakte hain agar required ho)
         const response = await api.get("/timetable");
         const dataArray = Array.isArray(response.data) ? response.data : (response.data.data || []);
@@ -129,10 +129,10 @@ export default function TeacherTimetablePage() {
       {/* Main Content */}
       {!loading && !error && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Left Content Area */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-4">
-            
+
             {viewMode === "day" ? (
               <>
                 {/* Day Selector Tabs */}
@@ -221,7 +221,7 @@ export default function TeacherTimetablePage() {
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
                     <BookOpen className="w-4 h-4 text-[#1B63E0]" />
-                    <span>Today's Lectures</span>
+                    <span>Today&apos;s Lectures</span>
                   </div>
                   <span className="font-bold text-sm text-[#0B1E36]">{activeDayPeriods.length} Classes</span>
                 </div>

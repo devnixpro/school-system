@@ -80,7 +80,7 @@ export default function StudentSidebar({ isCollapsed }) {
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   {!isCollapsed && <span className="truncate">{item.name}</span>}
                 </div>
-                
+
                 {/* {!isCollapsed && !isActive && (
                   <ChevronRight className="w-4 h-4 text-slate-400 opacity-60 flex-shrink-0" />
                 )} */}

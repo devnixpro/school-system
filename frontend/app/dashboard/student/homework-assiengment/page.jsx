@@ -1,15 +1,15 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { 
-  BookOpen, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  FileText, 
-  Upload, 
-  Search, 
-  Filter, 
-  Loader2, 
+import {
+  BookOpen,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  FileText,
+  Upload,
+  Search,
+  Filter,
+  Loader2,
   ExternalLink,
   Calendar
 } from 'lucide-react';
@@ -29,58 +29,8 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
         const response = await api.get(`/homework`);
         setHomeworkList(response.data?.data || response.data || []);
       } catch (err) {
-        console.error("Error fetching homeworks, using mock fallback:", err);
-        // Mock data for initial testing
-        setHomeworkList([
-          {
-            _id: "1",
-            title: "Algebra & Polynomials Problem Set 4",
-            subject: "Mathematics",
-            assignedBy: "Prof. Sharma",
-            assignedDate: "2026-09-28",
-            dueDate: "2026-10-05",
-            status: "PENDING",
-            description: "Solve all problems from exercise 4.2 in the workbook and show all working steps.",
-            attachmentUrl: "#"
-          },
-          {
-            _id: "2",
-            title: "Newton's Laws of Motion Lab Report",
-            subject: "Physics",
-            assignedBy: "Dr. Verma",
-            assignedDate: "2026-09-25",
-            dueDate: "2026-10-02",
-            status: "LATE",
-            description: "Submit the complete lab report including observations and graphs.",
-            attachmentUrl: "#"
-          },
-          {
-            _id: "3",
-            title: "Data Structures - Linked List Implementation",
-            subject: "Computer Science",
-            assignedBy: "Er. Amit Kumar",
-            assignedDate: "2026-09-20",
-            dueDate: "2026-09-28",
-            status: "SUBMITTED",
-            submittedOn: "2026-09-27",
-            marksObtained: 18,
-            totalMarks: 20,
-            description: "Implement singly linked list methods in C++ or Java."
-          },
-          {
-            _id: "4",
-            title: "Chemical Bonding Worksheet",
-            subject: "Chemistry",
-            assignedBy: "Dr. Neha Gupta",
-            assignedDate: "2026-09-22",
-            dueDate: "2026-09-29",
-            status: "SUBMITTED",
-            submittedOn: "2026-09-28",
-            marksObtained: 25,
-            totalMarks: 25,
-            description: "Complete chapter review questions on covalent and ionic bonding."
-          }
-        ]);
+        console.error('Unable to fetch homework:', err);
+        setHomeworkList([]);
       } finally {
         setLoading(false);
       }
@@ -94,7 +44,7 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
   const filteredHomeworks = homeworkList.filter(hw => {
     const matchesTab = activeTab === 'ALL' || hw.status === activeTab;
     const matchesSubject = selectedSubject === 'ALL' || hw.subject === selectedSubject;
-    const matchesSearch = hw.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = hw.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           hw.subject.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesTab && matchesSubject && matchesSearch;
@@ -148,7 +98,7 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        
+
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <span className="text-xs font-bold text-slate-400 uppercase">Pending Tasks</span>
@@ -185,9 +135,9 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
       </div>
 
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        
+
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          
+
           <div className="flex items-center bg-slate-100 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
             {['ALL', 'PENDING', 'SUBMITTED', 'LATE'].map((tab) => (
               <button
@@ -205,7 +155,7 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            
+
             <div className="relative flex-1 sm:w-64">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -247,11 +197,11 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
           </div>
         ) : (
           filteredHomeworks.map((hw) => (
-            <div 
-              key={hw._id} 
+            <div
+              key={hw._id}
               className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-100 transition-all space-y-4"
             >
-              
+
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg">
@@ -266,7 +216,7 @@ export default function StudentHomeworkPage({ studentId = "123" }) {
                 <p className="text-xs text-slate-500 leading-relaxed">{hw.description}</p>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-slate-100">
-                
+
                 <div className="flex flex-wrap items-center gap-4 text-xs font-semibold">
                   <div className="flex items-center gap-1.5 text-slate-500">
                     <Calendar className="w-3.5 h-3.5 text-slate-400" />

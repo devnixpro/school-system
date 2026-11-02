@@ -1,10 +1,10 @@
 "use client";
 import React from 'react';
-import {  
-  Receipt, 
-  FileSpreadsheet, 
-  AlertTriangle, 
-  Calendar, 
+import {
+  Receipt,
+  FileSpreadsheet,
+  AlertTriangle,
+  Calendar,
   ClipboardList,
   BookOpen,
   Users,

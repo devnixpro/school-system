@@ -5,8 +5,8 @@ export const noticeService = {
   getNotices: async (targetAudience = ["Students", "All"]) => {
     try {
       const response = await api.get("/notices", {
-        params: { 
-          targetAudience: Array.isArray(targetAudience) ? targetAudience.join(",") : targetAudience 
+        params: {
+          targetAudience: Array.isArray(targetAudience) ? targetAudience.join(",") : targetAudience
         }
       });
       return response.data;

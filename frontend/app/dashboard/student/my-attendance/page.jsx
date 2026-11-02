@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
-  Calendar as CalendarIcon, 
-  TrendingUp, 
-  AlertTriangle, 
-  Loader2, 
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Calendar as CalendarIcon,
+  TrendingUp,
+  AlertTriangle,
+  Loader2,
   Filter,
   BookOpen
 } from 'lucide-react';
@@ -94,7 +94,7 @@ export default function StudentAttendancePage({ studentId = "123" }) {
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6 font-sans">
-      
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-800">My Attendance Summary</h1>
@@ -109,7 +109,7 @@ export default function StudentAttendancePage({ studentId = "123" }) {
         )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
+
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-400 uppercase">Attendance Rate</span>
@@ -122,7 +122,7 @@ export default function StudentAttendancePage({ studentId = "123" }) {
               {attendanceData?.overallPercentage}%
             </span>
             <div className="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
-              <div 
+              <div
                 className={`h-full rounded-full transition-all duration-500 ${
                   isLowAttendance ? 'bg-amber-500' : 'bg-indigo-600'
                 }`}

@@ -10,8 +10,8 @@ export default function WeekGrid({ weeklySchedule, days }) {
           <tr className="bg-[#0B1E36] text-white text-xs uppercase tracking-wider">
             <th className="py-3.5 px-4 font-semibold rounded-tl-2xl w-28">Time</th>
             {days.map((day, idx) => (
-              <th 
-                key={day.id} 
+              <th
+                key={day.id}
                 className={`py-3.5 px-4 font-semibold text-center ${
                   idx === days.length - 1 ? "rounded-tr-2xl" : ""
                 }`}

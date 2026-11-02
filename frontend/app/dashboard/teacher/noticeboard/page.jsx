@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import api from "@/services/api";
-import { 
-  Megaphone, 
-  Calendar, 
-  User, 
-  Search, 
-  Loader2, 
-  AlertCircle, 
+import {
+  Megaphone,
+  Calendar,
+  User,
+  Search,
+  Loader2,
+  AlertCircle,
   BellRing,
   Plus,
   X
@@ -33,11 +33,10 @@ export default function TeacherNoticeboardPage() {
   // Fetching Notices for Teachers
   const fetchNotices = async () => {
     try {
-      setLoading(true);
-      setError(null);
       const response = await api.get("/notices", {
         params: { targetAudience: "Teachers" }
       });
+      setError(null);
       const dataArray = Array.isArray(response.data) ? response.data : (response.data.data || []);
       setNotices(dataArray);
     } catch (err) {
@@ -49,7 +48,26 @@ export default function TeacherNoticeboardPage() {
   };
 
   useEffect(() => {
-    fetchNotices();
+    let active = true;
+    api.get("/notices", { params: { targetAudience: "Teachers" } })
+      .then((response) => {
+        if (!active) return;
+        setError(null);
+        setNotices(Array.isArray(response.data) ? response.data : (response.data.data || []));
+      })
+      .catch((err) => {
+        if (active) {
+          console.error("Error fetching notices:", err);
+          setError(err.response?.data?.message || "Could not load noticeboard updates.");
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Handle Create Notice Form Submit
@@ -60,7 +78,7 @@ export default function TeacherNoticeboardPage() {
       await api.post("/notices", newNotice);
       setShowModal(false);
       setNewNotice({ title: "", content: "", targetAudience: "Students", priority: "Medium" });
-      fetchNotices(); 
+      fetchNotices();
     } catch (err) {
       alert(err.response?.data?.message || "Failed to post notice.");
     } finally {
@@ -163,8 +181,8 @@ export default function TeacherNoticeboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredNotices.length > 0 ? (
             filteredNotices.map((notice) => (
-              <div 
-                key={notice._id} 
+              <div
+                key={notice._id}
                 className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col justify-between relative overflow-hidden group"
               >
                 <div className={`absolute top-0 left-0 right-0 h-1 ${

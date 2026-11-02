@@ -1,0 +1,3 @@
+const r=require('express').Router();const c=require('../controllers/feeController');const {protect,authorize}=require('../middleware/auth');r.use(protect);
+r.get('/analytics/summary',authorize('admin'),c.analytics);r.get('/analytics/monthly',authorize('admin'),c.monthly);r.get('/analytics/by-type',authorize('admin'),c.byType);
+r.get('/:id/receipt',c.receipt);r.get('/:id',c.getById);r.get('/',c.list);r.post('/',authorize('admin'),c.create);r.post('/bulk',authorize('admin'),c.bulkCreate);r.put('/:id/pay',authorize('admin'),c.pay);r.put('/:id',authorize('admin'),c.update);r.delete('/:id',authorize('admin'),c.remove);module.exports=r;

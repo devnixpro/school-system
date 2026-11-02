@@ -13,7 +13,6 @@ export default function AdminExamsPage() {
   const [publishingExam, setPublishingExam] = useState(null);
 
   const load = () => {
-    setLoading(true);
     examService
       .list({ limit: 100 })
       .then((res) => setExams(res.data || []))
