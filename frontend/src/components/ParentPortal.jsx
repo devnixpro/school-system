@@ -47,8 +47,8 @@ function Sidebar({ active, setActive, open, close }) {
       </nav>
       <div className="sidebar-spacer" />
       <div className="help-card">
-        <div className="flex items-center gap-2 mb-2"><div className="rounded-lg bg-blue-500/15 p-2 text-blue-300"><Heart size={16}/></div><div className="help-card-title">We're here to help</div></div>
-        <p>Need assistance with your child's school account? Our support team is ready to help.</p>
+        <div className="flex items-center gap-2 mb-2"><div className="rounded-lg bg-blue-500/15 p-2 text-blue-300"><Heart size={16}/></div><div className="help-card-title">We&apos;re here to help</div></div>
+        <p>Need assistance with your child&apos;s school account? Our support team is ready to help.</p>
         <button className="help-button" onClick={() => setActive("support")}>Contact Support</button>
       </div>
       <div className="sidebar-foot">DevNixEdu Parent Portal v1.0<br/>© 2026 DevNixPro</div>
@@ -118,7 +118,7 @@ function AttendanceDonut({ attendance }) {
 
 function DashboardPage({ child, setPage, onToast, setSelectedId, accountName }) {
   return <>
-    <PageHeading eyebrow="Your family at a glance" title={`Welcome back, ${accountName} 👋`} subtitle="Here’s the latest update on your children's school life." right="Friday, 09 October 2026"/>
+    <PageHeading eyebrow="Your family at a glance" title={`Welcome back, ${accountName} 👋`} subtitle="Here’s the latest update on your children&apos;s school life." right="Friday, 09 October 2026"/>
     <div className="hero-panel"><div className="hero-content"><div className="hero-tag"><Sparkles size={13}/> FAMILY LEARNING HUB</div><h2>Every small step builds a brighter future.</h2><p>Stay connected with attendance, academic progress, fee updates and important school events — all in one place.</p></div><div className="hero-art"><GraduationCap className="big-cap" size={83} strokeWidth={1.2}/><div className="mini-card"><ShieldCheck size={25}/></div></div></div>
     <ChildSwitcher selected={child.id} onSelect={id => { setSelectedId(id); onToast(`Viewing ${children.find(c=>c.id===id).name}'s overview.`); }} />
     <div className="stats-grid">
@@ -135,7 +135,7 @@ function DashboardPage({ child, setPage, onToast, setSelectedId, accountName }) 
         </Panel>
       </div>
       <div className="stack">
-        <Panel title="Fee summary" subtitle="Your child's current fee status" action="Manage fees" onAction={() => setPage("fees")}>
+        <Panel title="Fee summary" subtitle="Your child&apos;s current fee status" action="Manage fees" onAction={() => setPage("fees")}>
           <div className="rounded-xl bg-blue-50 p-4 mb-3"><div className="text-[10px] text-blue-700">Outstanding balance</div><div className="mt-1 text-2xl font-extrabold tracking-tight text-slate-800">{money(child.feeDue)}</div><div className="mt-2 flex items-center gap-1 text-[10px] text-slate-500"><Clock3 size={12}/> Due date: 15 October 2026</div></div>
           {feeRecords.slice(0,3).map(f=><div className="fee-summary" key={f.id}><div><strong>{f.month}</strong><span>{f.title}</span></div><div className="text-right"><div className="fee-amount">{money(f.amount)}</div><span className={`pill ${f.status==="Paid"?"green":"orange"} mt-2`}>{f.status}</span></div></div>)}
           <button className="secondary-button w-full mt-3" onClick={() => onToast("A fee statement would be downloaded in the connected version.")}><ArrowDownToLine size={14}/> Download fee statement</button>
@@ -236,7 +236,7 @@ function AuthScreen({ onLogin }) {
   return <div className="auth-screen">
     <div className="auth-brand"><div className="brand-mark"><GraduationCap size={25}/></div><div><div className="brand-name">DevNix<span>Edu</span></div><div className="brand-sub">Smart School Management</div></div></div>
     <div className="auth-layout">
-      <div className="auth-intro"><div className="auth-kicker"><Sparkles size={14}/> YOUR CHILD'S SCHOOL, IN ONE PLACE</div><h1>Every school update.<br/><span>One simple portal.</span></h1><p>Attendance, fees, academic progress and school updates — all together for parents.</p><div className="auth-feature"><span><CalendarCheck size={18}/></span><div><strong>Stay informed</strong><small>Follow attendance and school activity</small></div></div><div className="auth-feature"><span><Wallet size={18}/></span><div><strong>Manage with clarity</strong><small>Review fee invoices and payment status</small></div></div></div>
+      <div className="auth-intro"><div className="auth-kicker"><Sparkles size={14}/> YOUR CHILD&apos;S SCHOOL, IN ONE PLACE</div><h1>Every school update.<br/><span>One simple portal.</span></h1><p>Attendance, fees, academic progress and school updates — all together for parents.</p><div className="auth-feature"><span><CalendarCheck size={18}/></span><div><strong>Stay informed</strong><small>Follow attendance and school activity</small></div></div><div className="auth-feature"><span><Wallet size={18}/></span><div><strong>Manage with clarity</strong><small>Review fee invoices and payment status</small></div></div></div>
       <div className="auth-card"><div className="auth-tabs"><button className={mode === "login" ? "selected" : ""} onClick={()=>{setMode("login");setError("")}}>Login</button><button className={mode === "signup" ? "selected" : ""} onClick={()=>{setMode("signup");setError("")}}>Sign up</button></div>
         <h2>{mode === "login" ? "Welcome back" : "Create parent account"}</h2><p className="auth-description">{mode === "login" ? "Enter your details to access the parent portal." : "Create a demo account to preview the portal."}</p>
         <form onSubmit={submit} className="auth-form">
@@ -263,6 +263,8 @@ export default function ParentPortal() {
   const [theme, setTheme] = useState("light");
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("devnixedu-theme");
+    // Keep the server-rendered theme stable until the saved client preference loads.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedTheme === "dark" || savedTheme === "light") setTheme(savedTheme);
   }, []);
   useEffect(() => {

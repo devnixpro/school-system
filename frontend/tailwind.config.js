@@ -1,11 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    './app/**/*.{js,jsx,ts,tsx}',
+    './pages/**/*.{js,jsx,ts,tsx}',      // agar pages router bhi hai
+    './components/**/*.{js,jsx,ts,tsx}',
+    './context/**/*.{js,jsx,ts,tsx}',
+    './hooks/**/*.{js,jsx,ts,tsx}',
+  ],
   theme: {
     extend: {
       colors: {
-        brand: { navy: "#12151C", blue: "#0077F5", pale: "#EEF6FF" }
-      }
+        primary: '#2563EB',
+        darkBg: '#0F172A',
+      },
+      fontFamily: {
+        sans: ['var(--font-jakarta)', 'sans-serif'],
+      },
     },
   },
   plugins: [],
