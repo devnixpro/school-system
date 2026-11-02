@@ -1,6 +1,6 @@
 /**
  * Loading skeleton for the fee analytics dashboard.
- * Pure CSS — no dependencies.
+ * Pure CSS  no dependencies.
  */
 export default function FeeAnalyticsSkeleton() {
   return (
@@ -10,7 +10,7 @@ export default function FeeAnalyticsSkeleton() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl border border-gray-100 p-5 h-28 flex items-start gap-4"
+            className="bg-white block min-h-[300px] rounded-2xl border border-gray-100 p-5 h-28 flex items-start gap-4"
           >
             <div className="w-12 h-12 rounded-xl bg-gray-100" />
             <div className="flex-1 space-y-2">
@@ -24,8 +24,8 @@ export default function FeeAnalyticsSkeleton() {
 
       {/* 2 charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 h-72" />
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 h-72" />
+        <div className="bg-white block min-h-[300px] rounded-2xl border border-gray-100 p-5 h-72" />
+        <div className="bg-white block min-h-[300px] rounded-2xl border border-gray-100 p-5 h-72" />
       </div>
     </div>
   );

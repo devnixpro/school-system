@@ -1,15 +1,41 @@
-import api, { BASE_URL } from "./api";
+import api from "./api";
 
 export const feeService = {
-  list:        async (params = {}) => (await api.get("/fees", { params })).data,
-  getById:     async (id) => (await api.get("/fees/" + id)).data,
-  create:      async (payload) => (await api.post("/fees", payload)).data,
-  bulkCreate:  async (payload) => (await api.post("/fees/bulk", payload)).data,
-  markPaid:    async (id, payload) => (await api.put("/fees/" + id + "/pay", payload)).data,
-  update:      async (id, payload) => (await api.put("/fees/" + id, payload)).data,
-  remove:      async (id) => (await api.delete("/fees/" + id)).data,
-  analytics:   async () => (await api.get("/fees/analytics/summary")).data,
-  monthly:     async () => (await api.get("/fees/analytics/monthly")).data,
-  byType:      async () => (await api.get("/fees/analytics/by-type")).data,
-  receiptUrl:  (id) => BASE_URL + "/fees/" + id + "/receipt?token=" + encodeURIComponent(typeof window !== "undefined" ? (localStorage.getItem("token") || "") : ""),
+  // --- CRUD ---
+  // GET /api/fees
+  list: (params) => api.get("/fees", { params }).then(res => res.data),
+  
+  // GET /api/fees/:id
+  getById: (id) => api.get(`/fees/${id}`).then(res => res.data),
+
+  // POST /api/fees
+  create: (payload) => api.post("/fees", payload).then(res => res.data),
+  
+  // POST /api/fees/bulk (Used for Generating Invoices)
+  bulkCreate: (payload) => api.post("/fees/bulk", payload).then(res => res.data),
+  
+  // PUT /api/fees/:id
+  update: (id, payload) => api.put(`/fees/${id}`, payload).then(res => res.data),
+
+  // --- ACTIONS ---
+  // PUT /api/fees/:id/pay
+  markPaid: (id, payload) => api.put(`/fees/${id}/pay`, payload).then(res => res.data),
+  
+  // DELETE /api/fees/:id
+  remove: (id) => api.delete(`/fees/${id}`).then(res => res.data),
+  
+  // GET /api/fees/:id/receipt (Opens PDF in new tab)
+  receiptUrl: (id) => `${api.defaults.baseURL}/fees/${id}/receipt`,
+  
+  // --- ANALYTICS ---
+  // GET /api/fees/analytics/summary
+  getAnalytics: () => api.get("/fees/analytics/summary").then(res => res.data),
+  
+  // GET /api/fees/analytics/monthly
+  getMonthlyAnalytics: () => api.get("/fees/analytics/monthly").then(res => res.data),
+  
+  // GET /api/fees/analytics/by-type
+  getByTypeAnalytics: () => api.get("/fees/analytics/by-type").then(res => res.data),
 };
+
+export default feeService;

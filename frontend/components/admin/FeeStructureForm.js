@@ -82,7 +82,7 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
     <form onSubmit={submit} className="space-y-6" noValidate>
       <div>
         <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-gray-900">
+          <label className="text-sm font-medium text-navy">
             Students
             <span className="ml-2 text-xs font-normal text-gray-500">
               {form.studentIds.length} selected
@@ -92,7 +92,7 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
             <button
               type="button"
               onClick={selectAllVisible}
-              className="text-xs font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus-visible:underline transition"
+              className="text-xs font-medium text-gray-600 hover:text-navy focus:outline-none focus-visible:underline transition"
             >
               {filtered.every((s) => form.studentIds.includes(s._id))
                 ? "Deselect all"
@@ -103,7 +103,7 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
 
         <input
           type="search"
-          placeholder="Search students by name or roll number…"
+          placeholder="Search students by name or roll number"
           aria-label="Search students"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -116,7 +116,7 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
           }`}
         >
           {loading && (
-            <p className="p-4 text-sm text-gray-400">Loading students…</p>
+            <p className="p-4 text-sm text-gray-400">Loading students</p>
           )}
           {!loading && filtered.length === 0 && (
             <p className="p-4 text-sm text-gray-400">
@@ -142,7 +142,7 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
                     className="rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">
+                    <div className="text-sm font-medium text-navy truncate">
                       {s.name}
                     </div>
                     {s.rollNo && (
@@ -227,10 +227,10 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center justify-between">
           <span className="text-sm text-gray-600">
             {form.studentIds.length} invoice
-            {form.studentIds.length !== 1 ? "s" : ""} × PKR{" "}
+            {form.studentIds.length !== 1 ? "s" : ""}  PKR{" "}
             {Number(form.amount).toLocaleString()}
           </span>
-          <span className="font-semibold text-gray-900 tabular-nums">
+          <span className="font-semibold text-navy tabular-nums">
             PKR {total.toLocaleString()}
           </span>
         </div>
@@ -239,10 +239,10 @@ export default function FeeStructureForm({ onSubmit, students = [], loading = fa
       <button
         type="submit"
         disabled={submitting}
-        className="w-full inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
+        className="w-full inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 bg-navy text-white hover:bg-navy-800 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
       >
         {submitting
-          ? "Generating invoices…"
+          ? "Generating invoices"
           : `Generate ${form.studentIds.length || 0} invoice${
               form.studentIds.length !== 1 ? "s" : ""
             }`}

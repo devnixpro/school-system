@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
   { name: "Dashboard", href: "/superadmin", icon: "📊" },
@@ -13,18 +13,23 @@ const navItems = [
 
 export default function SuperAdminLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/login");
+  };
 
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        {/* Logo */}
         <div className="p-6 border-b border-gray-200">
           <h1 className="text-2xl font-bold text-blue-600">DevNixEdu</h1>
           <p className="text-xs text-gray-500 mt-1">Super Admin Panel</p>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -45,7 +50,6 @@ export default function SuperAdminLayout({ children }) {
           })}
         </nav>
 
-        {/* User Info */}
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
@@ -61,7 +65,6 @@ export default function SuperAdminLayout({ children }) {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
-        {/* Top Navbar */}
         <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
           <h2 className="text-lg font-semibold text-gray-800">
             Super Admin Dashboard
@@ -71,13 +74,15 @@ export default function SuperAdminLayout({ children }) {
               🔔
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            <button className="text-sm text-gray-600 hover:text-gray-800">
+            <button 
+              onClick={handleLogout}
+              className="text-sm text-gray-600 hover:text-gray-800 font-medium"
+            >
               Logout
             </button>
           </div>
         </header>
 
-        {/* Page Content */}
         <div className="p-8">{children}</div>
       </main>
     </div>

@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -18,10 +17,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      match: [
-        /^\S+@\S+\.\S+$/,
-        'Please enter a valid email',
-      ],
+      match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email'],
     },
 
     password: {
@@ -33,13 +29,12 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ['superadmin', 'admin', 'teacher', 'student'],
+      enum: ['superadmin', 'admin', 'teacher', 'student', 'parent'],
       default: 'student',
       required: true,
     },
 
-    // School linked to this user.
-    // Super Admin does not belong to a particular school.
+    // Existing school reference used by the application.
     school: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'School',
@@ -52,17 +47,45 @@ const userSchema = new mongoose.Schema(
       },
     },
 
+    // Compatibility field for payment-gateway tenant scoping.
+    schoolId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'School',
+      default: null,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
     },
+    // New signups must verify their email.
+// Existing users remain compatible.
+isEmailVerified: {
+  type: Boolean,
+  default: true,
+},
+
+// Store only the hashed verification code.
+emailVerificationCodeHash: {
+  type: String,
+  select: false,
+},
+
+emailVerificationExpires: {
+  type: Date,
+  select: false,
+},
+
+emailVerificationLastSentAt: {
+  type: Date,
+  select: false,
+},
   },
   {
     timestamps: true,
   }
 );
 
-// Hash the password before saving.
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
     return;
@@ -72,7 +95,6 @@ userSchema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Compare the entered password with the stored hash.
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };

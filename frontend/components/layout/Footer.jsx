@@ -1,6 +1,6 @@
 'use client';
 
-import Logo from './Logo';
+import Logo from './FooterLogo';
 import { NAV_LINKS } from '@/data/navigation';
 import { MODULES } from '@/data/modules';
 import { useScrollTo } from '@/hooks/useScrollTo';

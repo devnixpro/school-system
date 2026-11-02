@@ -1,22 +1,33 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import ChildSwitcher from '@/components/parent/ChildSwitcher';
 import useSelectedChild from '@/components/parent/useSelectedChild';
-import useAsyncData from '@/hooks/useAsyncData';
 import { parentService } from '@/services/parentService';
 
 export default function ChildHomeworkPage() {
   const { childList, selectedId, select, loading, error } = useSelectedChild();
-  const request = useCallback(
-    () => parentService.getHomework(selectedId),
-    [selectedId]
-  );
-  const { data: homework, error: fetchError, loading: dataLoading } =
-    useAsyncData(selectedId || "", request);
+  const [response, setResponse] = useState(null);
+
+  useEffect(() => {
+    if (!selectedId) return;
+    let cancelled = false;
+    parentService
+      .getHomework(selectedId)
+      .then((data) => !cancelled && setResponse({ childId: selectedId, data, error: '' }))
+      .catch((error) => !cancelled && setResponse({ childId: selectedId, data: null, error: error.message }));
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId]);
+
+  const currentResponse = response?.childId === selectedId ? response : null;
+  const homework = currentResponse?.data || null;
+  const fetchError = currentResponse?.error || '';
 
   if (loading) return <p className="p-6 text-slate-500">Loading...</p>;
   if (error) return <p className="p-6 text-red-600">{error}</p>;
+  if (!childList.length) return <p className="p-6 text-slate-600">No children are linked to this parent account yet.</p>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
@@ -24,7 +35,7 @@ export default function ChildHomeworkPage() {
       <ChildSwitcher childList={childList} selectedId={selectedId} onChange={select} />
 
       {fetchError && <p className="text-red-600">{fetchError}</p>}
-      {dataLoading && <p className="text-slate-500">Loading homework...</p>}
+      {!homework && !fetchError && <p className="text-slate-500">Loading homework...</p>}
 
       {homework && homework.length === 0 && (
         <p className="text-slate-600">No homework has been assigned to this class yet.</p>

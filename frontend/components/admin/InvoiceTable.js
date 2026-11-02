@@ -11,7 +11,7 @@ const formatDate = (d) =>
         month: "short",
         year: "numeric",
       })
-    : "—";
+    : "";
 
 const PAGE_SIZE = 15;
 
@@ -69,7 +69,7 @@ function InvoiceTable({
   if (!fees.length) {
     return (
       <div className="bg-white rounded-2xl border border-gray-200/60 py-16 text-center">
-        <h3 className="font-semibold text-gray-900 text-[15px] mb-1">
+        <h3 className="font-semibold text-navy text-[15px] mb-1">
           No invoices yet
         </h3>
         <p className="text-sm text-gray-500 max-w-md mx-auto mb-5">
@@ -85,7 +85,7 @@ function InvoiceTable({
       <div className="p-4 border-b border-gray-100 flex flex-wrap gap-3 items-center">
         <input
           type="search"
-          placeholder="Search by student, roll number, or invoice number…"
+          placeholder="Search by student, roll number, or invoice number"
           aria-label="Search invoices"
           value={query}
           onChange={(e) => {
@@ -103,7 +103,7 @@ function InvoiceTable({
               <button
                 type="button"
                 onClick={markSelectedPaid}
-                className="text-xs font-medium bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
+                className="text-xs font-medium bg-navy text-white px-3 py-1.5 rounded-lg hover:bg-navy-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
               >
                 Mark as paid
               </button>
@@ -163,8 +163,8 @@ function InvoiceTable({
                   {fee.invoiceNo}
                 </td>
                 <td className="px-5 py-3.5">
-                  <div className="font-medium text-gray-900">
-                    {fee.studentId?.name || "—"}
+                  <div className="font-medium text-navy">
+                    {fee.studentId?.name || ""}
                   </div>
                   {fee.studentId?.rollNo && (
                     <div className="text-[11px] text-gray-400 mt-0.5">
@@ -173,7 +173,7 @@ function InvoiceTable({
                   )}
                 </td>
                 <td className="px-5 py-3.5 text-gray-600">{fee.month}</td>
-                <td className="px-5 py-3.5 text-right font-medium text-gray-900 tabular-nums">
+                <td className="px-5 py-3.5 text-right font-medium text-navy tabular-nums">
                   {formatCurrency(fee.amount)}
                 </td>
                 <td className="px-5 py-3.5 text-gray-600 tabular-nums text-[13px]">
@@ -188,7 +188,7 @@ function InvoiceTable({
                       <button
                         type="button"
                         onClick={() => onViewReceipt(fee)}
-                        className="text-gray-500 hover:text-gray-900 px-2 py-1 rounded-md hover:bg-gray-100 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 transition"
+                        className="text-gray-500 hover:text-navy px-2 py-1 rounded-md hover:bg-gray-100 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 transition"
                       >
                         Receipt
                       </button>
@@ -197,7 +197,7 @@ function InvoiceTable({
                       <button
                         type="button"
                         onClick={() => onPay(fee)}
-                        className="text-gray-900 hover:bg-gray-100 px-2 py-1 rounded-md text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 transition"
+                        className="text-navy hover:bg-gray-100 px-2 py-1 rounded-md text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 transition"
                       >
                         Pay
                       </button>
@@ -222,7 +222,7 @@ function InvoiceTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 text-sm">
           <span className="text-gray-500 text-xs tabular-nums">
-            {(page - 1) * PAGE_SIZE + 1}–
+            {(page - 1) * PAGE_SIZE + 1}
             {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
           </span>
           <nav className="flex items-center gap-1" aria-label="Pagination">

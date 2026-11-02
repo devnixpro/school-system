@@ -19,20 +19,20 @@ import {
 
 const VIEWS = [
   { value: "table", label: "Table" },
-  { value: "grouped", label: "Grouped" },
+  { value: "timeline", label: "Timeline" },
 ];
 
 const METHODS = ["all", "cash", "card", "bank_transfer", "online", "cheque"];
 
-const formatMethod = (method) => {
-  const labels = {
+const formatMethod = (m) => {
+  const map = {
     cash: "Cash",
     card: "Card",
     bank_transfer: "Bank transfer",
     online: "Online",
     cheque: "Cheque",
   };
-  return labels[method] || method || "Unknown";
+  return map[m] || m;
 };
 
 export default function PaymentsPage() {
@@ -41,6 +41,7 @@ export default function PaymentsPage() {
   const [view, setView] = useState("table");
   const [filters, setFilters] = useState({ method: "all", month: "" });
   const [toast, setToast] = useState(null);
+  const [error, setError] = useState("");
 
   const showToast = (message, tone = "success") => {
     setToast({ message, tone });
@@ -51,10 +52,14 @@ export default function PaymentsPage() {
     feeService
       .list({ status: "paid", limit: 200 })
       .then((res) => {
-        const real = res.data || [];
-        setFees(real);
+        // Sirf asli data set kar rahe hain (Mock data hata diya hai)
+        setFees(res.data || []);
       })
-      .catch(() => setFees([]))
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to load payments. Please check backend.");
+        setFees([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -155,6 +160,12 @@ export default function PaymentsPage() {
             </button>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <StatCard

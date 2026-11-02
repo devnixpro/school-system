@@ -3,6 +3,7 @@
 import Button from '@/components/ui/Button';
 import { useModal } from '@/context/ModalContext';
 import DashboardMockup from '@/components/hero-mockup/DashboardMockup';
+import Link from 'next/link';
 
 const TRUST_BADGES = ['No credit card required', 'Free setup', 'Cancel anytime'];
 
@@ -30,15 +31,16 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-              <Button
-                variant="primary"
-                size="lg"
-                icon="fa-solid fa-arrow-right text-xs"
-                onClick={() => openModal('Create Demo')}
-                className="w-full sm:w-auto"
-              >
-                Create Demo
-              </Button>
+             <Link href="/onboarding" className="w-full sm:w-auto">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon="fa-solid fa-arrow-right text-xs"
+                  className="w-full sm:w-auto"
+                >
+                  Get Started
+                </Button>
+              </Link>
               <Button
                 variant="secondary"
                 size="lg"

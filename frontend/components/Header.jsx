@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Search, Bell, MessageSquare, ChevronDown, User, Menu } from 'lucide-react';
-import GraduationCapIcon from '@/public/GraduationCapIcon';
+import Logo from '@/public/dashboardlogo.png'
 
 export default function Header({ isCollapsed, setIsCollapsed }) {
   const [user, setUser] = useState(null);
@@ -13,10 +13,18 @@ export default function Header({ isCollapsed, setIsCollapsed }) {
 
       <div className="flex items-center gap-6 flex-1 max-w-xl">
         <div className="flex items-center gap-3">
-          <GraduationCapIcon className="w-14 h-14 text-sky-400 flex-shrink-0" />
+          <Image
+            src={Logo}
+            alt="Logo"
+            width={56}
+            height={53}
+            className="w-15 h-full text-sky-400 flex-shrink-0"
+          />
           <div className="flex flex-col">
-            <span className="font-extrabold text-xl leading-tight text-white tracking-wide">
-              DevNix<span className="text-sky-400">Edu</span>
+            <span className="font-extrabold text-xl leading-tight tracking-wide italic">
+              <span className="text-white">Dev</span>
+              <span className="text-blue-600">Nix</span>
+              <span className="text-white">Edu</span>
             </span>
             <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider">
               Smart School Management

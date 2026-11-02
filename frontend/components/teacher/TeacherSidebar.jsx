@@ -19,55 +19,51 @@ import {
 import api from '@/services/api';
 
 const NAV_ITEMS = [
-  {
-    name: 'Dashboard',
-    href: '/dashboard/teacher',
-    icon: Home
-  },{
-    name: 'Classes & Subjects',
-    href: '/dashboard/teacher/subjects',
-    icon: LayoutGrid
-  },{
-    name: 'Students',
+  { 
+    name: 'Dashboard', 
+    href: '/dashboard/teacher', 
+    icon: Home 
+  },{ 
+    name: 'Classes & Subjects', 
+    href: '/dashboard/teacher/subjects', 
+    icon: LayoutGrid 
+  },{ 
+    name: 'Students', 
     subLabel: 'My Classes',
-    href: '/dashboard/teacher/students',
-    icon: Users
-  },{
-    name: 'Attendance',
+    href: '/dashboard/teacher/students', 
+    icon: Users 
+  },{ 
+    name: 'Attendance', 
     subLabel: 'My Classes',
-    href: '/dashboard/teacher/mark-attendance',
-    icon: CalendarCheck
-  },{
-    name: 'Homework & Assignments',
-    href: '/dashboard/teacher/homework',
-    icon: ClipboardPen
-  },{
-    name: 'Exams & Grading',
+    href: '/dashboard/teacher/mark-attendance', 
+    icon: CalendarCheck 
+  },{ 
+    name: 'Homework & Assignments', 
+    href: '/dashboard/teacher/homework', 
+    icon: ClipboardPen 
+  },{ 
+    name: 'Exams & Grading', 
     subLabel: 'My Classes',
-    href: '/dashboard/teacher/enter-marks',
-    icon: FileCheck
-  },{
-    name: 'Timetable',
+    href: '/dashboard/teacher/enter-marks', 
+    icon: FileCheck 
+  },{ 
+    name: 'Timetable', 
     subLabel: 'My Schedule',
-    href: '/dashboard/teacher/timetable',
-    icon: CalendarDays
-  },{
-    name: 'Reports',
+    href: '/dashboard/teacher/timetable', 
+    icon: CalendarDays 
+  },{ 
+    name: 'Reports', 
     subLabel: 'Student & Class',
-    href: '/dashboard/teacher/reports',
-    icon: FileText
-  },{
-    name: 'Notice Board',
-    href: '/dashboard/teacher/noticeboard',
-    icon: ClipboardType
-  },{
-    name: 'My Profile',
-    href: '/dashboard/teacher/profile',
-    icon: User
-  },{
-    name: 'Settings',
-    href: '/dashboard/teacher/settings',
-    icon: Settings
+    href: '/dashboard/teacher/reports', 
+    icon: FileText 
+  },{ 
+    name: 'Notice Board', 
+    href: '/dashboard/teacher/noticeboard', 
+    icon: ClipboardType 
+  },{ 
+    name: 'Settings', 
+    href: '/dashboard/teacher/settings', 
+    icon: Settings 
   }
 ];
 

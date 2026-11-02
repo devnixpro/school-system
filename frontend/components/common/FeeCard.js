@@ -12,7 +12,7 @@ const formatDate = (d) =>
         month: "short",
         year: "numeric",
       })
-    : "—";
+    : "";
 
 function FeeCard({ fee, onPay, onViewReceipt }) {
   const accent =
@@ -28,12 +28,12 @@ function FeeCard({ fee, onPay, onViewReceipt }) {
     >
       <header className="p-5 pb-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="font-semibold text-gray-900 text-[15px] truncate">
+          <h3 className="font-semibold text-navy text-[15px] truncate">
             {fee.month}
           </h3>
           <p className="text-xs text-gray-500 mt-1 truncate">
             {fee.studentId?.name || "Student"}
-            {fee.studentId?.rollNo ? ` · ${fee.studentId.rollNo}` : ""}
+            {fee.studentId?.rollNo ? `  ${fee.studentId.rollNo}` : ""}
           </p>
           <p className="text-[11px] font-mono text-gray-400 mt-1">
             {fee.invoiceNo}
@@ -43,7 +43,7 @@ function FeeCard({ fee, onPay, onViewReceipt }) {
       </header>
 
       <div className="px-5 pb-4">
-        <div className="text-2xl font-semibold text-gray-900 tracking-tight tabular-nums">
+        <div className="text-2xl font-semibold text-navy tracking-tight tabular-nums">
           {formatCurrency(fee.amount)}
         </div>
       </div>
@@ -72,7 +72,7 @@ function FeeCard({ fee, onPay, onViewReceipt }) {
           <button
             type="button"
             onClick={() => onPay(fee)}
-            className="flex-1 bg-gray-900 text-white font-medium rounded-lg px-4 py-2 text-[13px] hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
+            className="flex-1 bg-navy text-white font-medium rounded-lg px-4 py-2 text-[13px] hover:bg-navy-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
           >
             Mark as paid
           </button>

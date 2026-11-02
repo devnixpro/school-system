@@ -27,7 +27,6 @@ const NAV_ITEMS = [
   { name: 'Timetable', href: '/dashboard/student/timetable', icon: Calendar },
   { name: 'Notice Board', href: '/dashboard/student/noticeboard', icon: ClipboardType},
   { name: 'Syllabus', href: '/dashboard/student/syllabus', icon: Book },
-  { name: 'My Profile', href: '/dashboard/student/profile', icon: User },
   { name: 'Settings', href: '/dashboard/student/settings', icon: Settings }
 ];
 

@@ -1,9 +1,8 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChildSwitcher from '@/components/parent/ChildSwitcher';
 import useSelectedChild from '@/components/parent/useSelectedChild';
-import useAsyncData from '@/hooks/useAsyncData';
 import { parentService } from '@/services/parentService';
 
 const STATUS_STYLE = {
@@ -18,17 +17,27 @@ const currentMonth = () => new Date().toISOString().slice(0, 7); // YYYY-MM
 export default function ChildAttendancePage() {
   const { childList, selectedId, select, loading, error } = useSelectedChild();
   const [month, setMonth] = useState(currentMonth());
-  const request = useCallback(
-    () => parentService.getAttendance(selectedId, month),
-    [selectedId, month]
-  );
-  const { data, error: fetchError, loading: dataLoading } = useAsyncData(
-    selectedId ? `${selectedId}:${month}` : "",
-    request
-  );
+  const [response, setResponse] = useState(null);
+
+  useEffect(() => {
+    if (!selectedId) return;
+    let cancelled = false;
+    parentService
+      .getAttendance(selectedId, month)
+      .then((data) => !cancelled && setResponse({ childId: selectedId, data, error: '' }))
+      .catch((error) => !cancelled && setResponse({ childId: selectedId, data: null, error: error.message }));
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, month]);
+
+  const currentResponse = response?.childId === selectedId ? response : null;
+  const data = currentResponse?.data || null;
+  const fetchError = currentResponse?.error || '';
 
   if (loading) return <p className="p-6 text-slate-500">Loading...</p>;
   if (error) return <p className="p-6 text-red-600">{error}</p>;
+  if (!childList.length) return <p className="p-6 text-slate-600">No children are linked to this parent account yet.</p>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
@@ -46,7 +55,7 @@ export default function ChildAttendancePage() {
       </label>
 
       {fetchError && <p className="text-red-600">{fetchError}</p>}
-      {dataLoading && <p className="text-slate-500">Loading attendance...</p>}
+      {!data && !fetchError && <p className="text-slate-500">Loading attendance...</p>}
 
       {data && (
         <>

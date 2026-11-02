@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 const METHODS = [
-  { value: "cash", label: "Cash", icon: "💵" },
-  { value: "card", label: "Card", icon: "💳" },
-  { value: "bank_transfer", label: "Bank transfer", icon: "🏦" },
-  { value: "online", label: "Online", icon: "🌐" },
-  { value: "cheque", label: "Cheque", icon: "📄" },
+  { value: "cash", label: "Cash", icon: "" },
+  { value: "card", label: "Card", icon: "" },
+  { value: "bank_transfer", label: "Bank transfer", icon: "" },
+  { value: "online", label: "Online", icon: "" },
+  { value: "cheque", label: "Cheque", icon: "" },
 ];
 
 export default function FeePaymentModal({ isOpen, onClose, fee, onConfirm }) {
@@ -75,17 +75,17 @@ function FeePaymentForm({ fee, onClose, onConfirm }) {
         <header className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h3
             id="payment-modal-title"
-            className="font-semibold text-gray-900 text-[17px] tracking-tight"
+            className="font-semibold text-navy text-[17px] tracking-tight"
           >
             Record payment
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-900 text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 rounded"
+            className="text-gray-400 hover:text-navy text-2xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 rounded"
             aria-label="Close dialog"
           >
-            ×
+            
           </button>
         </header>
 
@@ -93,19 +93,19 @@ function FeePaymentForm({ fee, onClose, onConfirm }) {
           <div className="bg-gray-50 rounded-xl p-4 text-sm space-y-2">
             <div className="flex justify-between">
               <span className="text-gray-500">Invoice</span>
-              <span className="font-mono text-gray-900 text-[13px]">
+              <span className="font-mono text-navy text-[13px]">
                 {fee.invoiceNo}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Student</span>
-              <span className="text-gray-900">
-                {fee.studentId?.name || "—"}
+              <span className="text-navy">
+                {fee.studentId?.name || ""}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-gray-200 mt-2">
               <span className="font-medium text-gray-700">Amount</span>
-              <span className="font-semibold text-gray-900 text-[15px] tabular-nums">
+              <span className="font-semibold text-navy text-[15px] tabular-nums">
                 {formatCurrency(fee.amount)}
               </span>
             </div>
@@ -126,7 +126,7 @@ function FeePaymentForm({ fee, onClose, onConfirm }) {
                     aria-pressed={active}
                     className={`flex flex-col items-center gap-1 rounded-lg border py-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-1 ${
                       active
-                        ? "border-gray-900 bg-gray-50"
+                        ? "border-navy bg-gray-50"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
@@ -135,7 +135,7 @@ function FeePaymentForm({ fee, onClose, onConfirm }) {
                     </span>
                     <span
                       className={`text-[11px] font-medium ${
-                        active ? "text-gray-900" : "text-gray-600"
+                        active ? "text-navy" : "text-gray-600"
                       }`}
                     >
                       {label}
@@ -183,7 +183,7 @@ function FeePaymentForm({ fee, onClose, onConfirm }) {
             type="button"
             onClick={submit}
             disabled={submitting}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gray-900 text-white font-medium text-sm hover:bg-gray-800 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white font-medium text-sm hover:bg-navy-800 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition"
           >
             {submitting && (
               <span
@@ -191,7 +191,7 @@ function FeePaymentForm({ fee, onClose, onConfirm }) {
                 aria-hidden="true"
               />
             )}
-            {submitting ? "Processing…" : "Confirm payment"}
+            {submitting ? "Processing" : "Confirm payment"}
           </button>
         </footer>
       </div>
