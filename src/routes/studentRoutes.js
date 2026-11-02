@@ -17,14 +17,14 @@ router.use(protect);
 router
   .route('/')
   .post(authorize('admin'), createStudent)
-  .get(getAllStudents);
+  .get(authorize('superadmin', 'admin', 'teacher', 'student'), getAllStudents);
 
 // @route  GET    /api/students/:id  - Get single student
 // @route  PUT    /api/students/:id  - Update student (admin only)
 // @route  DELETE /api/students/:id  - Delete student (admin only)
 router
   .route('/:id')
-  .get(getStudentById)
+  .get(authorize('superadmin', 'admin', 'teacher', 'student'), getStudentById)
   .put(authorize('admin'), updateStudent)
   .delete(authorize('admin'), deleteStudent);
 

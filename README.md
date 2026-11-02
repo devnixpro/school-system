@@ -120,6 +120,26 @@ npm start
 | GET | `/api/attendance/summary/:studentId` | Student attendance summary | Private |
 | PUT | `/api/attendance/:id` | Update attendance record | Admin, Teacher |
 
+### 👪 Parent portal
+
+Admins create parent credentials and link active students with
+`POST /api/admin/parents` using `{ "name", "email", "password", "studentIds": ["student-id"] }`.
+Parents sign in at `/login`; the frontend routes parent accounts to `/parent`.
+Parent APIs only return data for students linked to the authenticated parent:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/parent/children` | List linked children |
+| GET | `/api/parent/children/:childId/summary` | Attendance, fee, homework, and exam summary |
+| GET | `/api/parent/children/:childId/attendance?month=YYYY-MM` | Monthly attendance |
+| GET | `/api/parent/children/:childId/results` | Published exam results |
+| GET | `/api/parent/children/:childId/fees` | Child invoices |
+| GET | `/api/parent/children/:childId/fees/:feeId/receipt` | Download a child invoice receipt |
+| GET | `/api/parent/children/:childId/homework` | Assignments for the child's class and section |
+
+Admins manage exam schedules/results at `/api/exams`; admins and teachers manage
+class homework at `/api/homework`. Exam results are published per student.
+
 ---
 
 ## 🔑 Authentication

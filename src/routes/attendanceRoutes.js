@@ -15,10 +15,14 @@ router.use(protect);
 router
   .route('/')
   .post(authorize('admin', 'teacher'), markAttendance)
-  .get(getAttendance);
+  .get(authorize('superadmin', 'admin', 'teacher', 'student'), getAttendance);
 
 // @route  GET   /api/attendance/summary/:studentId     - Get attendance summary
-router.get('/summary/:studentId', getAttendanceSummary);
+router.get(
+  '/summary/:studentId',
+  authorize('superadmin', 'admin', 'teacher', 'student'),
+  getAttendanceSummary
+);
 
 // @route  PUT   /api/attendance/:id                    - Update attendance record
 router.put('/:id', authorize('admin', 'teacher'), updateAttendance);

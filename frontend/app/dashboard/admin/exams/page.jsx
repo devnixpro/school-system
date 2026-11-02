@@ -11,33 +11,55 @@ export default function AdminExamsPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingExam, setEditingExam] = useState(null);
   const [publishingExam, setPublishingExam] = useState(null);
+  const [error, setError] = useState("");
 
-  const load = () => {
+  const load = async () => {
     setLoading(true);
-    examService
-      .list({ limit: 100 })
-      .then((res) => setExams(res.data || []))
-      .catch(() => setExams([]))
-      .finally(() => setLoading(false));
+    setError("");
+    try {
+      const response = await examService.list({ limit: 100 });
+      setExams(response.data || []);
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "Unable to load exams.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(load, []);
+  useEffect(() => {
+    let active = true;
+    examService.list({ limit: 100 })
+      .then((response) => {
+        if (active) setExams(response.data || []);
+      })
+      .catch((requestError) => {
+        if (active) setError(requestError.response?.data?.message || "Unable to load exams.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
 
   const handleCreateOrEdit = async (payload) => {
     if (editingExam?._id) await examService.update(editingExam._id, payload);
     else await examService.create(payload);
-    load();
+    await load();
   };
 
   const handleDelete = async (exam) => {
     if (!confirm(`Delete "${exam.subject}" exam? This cannot be undone.`)) return;
-    await examService.remove(exam._id);
-    load();
+    try {
+      await examService.remove(exam._id);
+      await load();
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "Unable to delete the exam.");
+    }
   };
 
   const handlePublishResult = async (id, payload) => {
     await examService.publishResult(id, payload);
-    load();
+    await load();
   };
 
   const openCreate = () => {
@@ -64,6 +86,8 @@ export default function AdminExamsPage() {
           + Schedule Exam
         </button>
       </header>
+
+      {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</p>}
 
       {loading ? (
         <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center text-gray-400">Loading…</div>

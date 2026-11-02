@@ -6,6 +6,7 @@ const {
   getStudents,
   getTeachers,
   getClasses,
+  createParent,
 } = require('../controllers/admin.controller');
 
 const { protect } = require('../middleware/auth');
@@ -17,5 +18,6 @@ router.get('/dashboard', getDashboard);
 router.get('/students', getStudents);
 router.get('/teachers', getTeachers);
 router.get('/classes', getClasses);
+router.post('/parents', createParent);
 
 module.exports = router;

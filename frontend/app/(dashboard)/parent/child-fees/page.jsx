@@ -5,21 +5,13 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip,
 } from "recharts";
 import InvoiceTable from "@/components/admin/InvoiceTable";
+import { parentService } from "@/services/parentService";
 
 const money = (n) => new Intl.NumberFormat("en-PK", {
   style: "currency", currency: "PKR", maximumFractionDigits: 0,
 }).format(Number(n) || 0);
 
 const COLORS = ["#10B981", "#F59E0B", "#F43F5E"];
-
-async function api(url, options = {}) {
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error(data.message || data.error || `Request failed (${response.status})`);
-  }
-  return response;
-}
 
 function statusOf(fee) {
   const status = String(fee.status || "pending").toLowerCase();
@@ -36,7 +28,6 @@ export default function ParentChildFeesPage() {
   const [loadingChildren, setLoadingChildren] = useState(true);
   const [loadingFees, setLoadingFees] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
 
   const idOf = (child) => String(child._id || child.id || "");
   const nameOf = (child) => child.name || child.fullName ||
@@ -49,12 +40,13 @@ export default function ParentChildFeesPage() {
       setLoadingChildren(true);
       setError("");
       try {
-        const response = await api("/api/parent/children");
-        const data = await response.json();
-        const items = Array.isArray(data) ? data : data.children || data.data || [];
+        const items = await parentService.getChildren();
         if (!active) return;
         setChildren(items);
-        if (items.length) setSelectedId(idOf(items[0]));
+        if (items.length) {
+          setLoadingFees(true);
+          setSelectedId(idOf(items[0]));
+        }
       } catch (err) {
         if (active) setError(err.message || "Unable to load linked children.");
       } finally {
@@ -80,11 +72,7 @@ export default function ParentChildFeesPage() {
     setLoadingFees(true);
     setError("");
     try {
-      // The backend must filter by studentId and verify this child belongs
-      // to the authenticated parent. Never trust a client-supplied ID alone.
-      const response = await api(`/api/fees?studentId=${encodeURIComponent(selectedId)}`);
-      const data = await response.json();
-      setFees(Array.isArray(data) ? data : data.fees || data.invoices || []);
+      setFees(await parentService.getFees(selectedId));
     } catch (err) {
       setError(err.message || "Unable to load this child's fee records.");
     } finally {
@@ -92,7 +80,21 @@ export default function ParentChildFeesPage() {
     }
   }, [selectedId]);
 
-  useEffect(() => { loadFees(); }, [loadFees]);
+  useEffect(() => {
+    if (!selectedId) return undefined;
+    let active = true;
+    parentService.getFees(selectedId)
+      .then((items) => {
+        if (active) setFees(items);
+      })
+      .catch((requestError) => {
+        if (active) setError(requestError.message || "Unable to load this child's fee records.");
+      })
+      .finally(() => {
+        if (active) setLoadingFees(false);
+      });
+    return () => { active = false; };
+  }, [selectedId]);
 
   const counts = useMemo(() => {
     const result = { paid: 0, pending: 0, overdue: 0 };
@@ -111,19 +113,10 @@ export default function ParentChildFeesPage() {
     { name: "Overdue", value: counts.overdue },
   ];
 
-  async function payInvoice(fee) {
-    const id = fee._id || fee.id;
-    if (!id) throw new Error("Invoice ID is missing.");
-    await api(`/api/fees/${encodeURIComponent(id)}/pay`, { method: "PUT" });
-    setNotice("Invoice status updated.");
-    await loadFees();
-  }
-
   async function receipt(fee) {
     const id = fee._id || fee.id;
     if (!id) throw new Error("Invoice ID is missing.");
-    const response = await api(`/api/fees/${encodeURIComponent(id)}/receipt`);
-    const blob = await response.blob();
+    const blob = await parentService.downloadReceipt(selectedId, id);
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -140,8 +133,8 @@ export default function ParentChildFeesPage() {
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-brand">PARENT PORTAL / FAMILY FINANCE</p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-navy sm:text-4xl">Children's fees</h1>
-            <p className="mt-2 text-sm text-gray-500">Manage fee balances and payment records for your linked children.</p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-navy sm:text-4xl">Children&apos;s fees</h1>
+            <p className="mt-2 text-sm text-gray-500">View fee balances and payment records for your linked children.</p>
           </div>
           <button onClick={loadFees} disabled={loadingFees || !selectedId} className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50">
             {loadingFees ? "Refreshing..." : "↻ Refresh account"}
@@ -149,7 +142,6 @@ export default function ParentChildFeesPage() {
         </header>
 
         {error && <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700"><span>{error}</span><button onClick={() => children.length ? loadFees() : window.location.reload()} className="font-bold underline">Retry</button></div>}
-        {notice && <div role="status" className="flex justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{notice}<button onClick={() => setNotice("")}>Dismiss ×</button></div>}
 
         <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -174,7 +166,7 @@ export default function ParentChildFeesPage() {
                 const active = id === selectedId;
                 const name = nameOf(item);
                 return (
-                  <button key={id} onClick={() => { setSelectedId(id); setNotice(""); }} className={`flex min-w-52 items-center gap-3 rounded-xl border p-3.5 text-left transition ${active ? "border-brand bg-blue-50 ring-1 ring-brand" : "border-gray-200 bg-white hover:border-blue-200 hover:bg-gray-50"}`}>
+                  <button key={id} onClick={() => { setSelectedId(id); setFees([]); setLoadingFees(true); setError(""); }} className={`flex min-w-52 items-center gap-3 rounded-xl border p-3.5 text-left transition ${active ? "border-brand bg-blue-50 ring-1 ring-brand" : "border-gray-200 bg-white hover:border-blue-200 hover:bg-gray-50"}`}>
                     <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${active ? "bg-brand text-white" : "bg-gray-100 text-gray-600"}`}>{name.charAt(0).toUpperCase()}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-bold text-navy">{name}</span>
@@ -259,7 +251,7 @@ export default function ParentChildFeesPage() {
             <h2 className="text-lg font-bold text-navy">{child ? `${nameOf(child)}'s invoice history` : "Invoice history"}</h2>
             <p className="mt-1 text-sm text-gray-500">Review fee details and download receipts.</p>
           </div>
-          <InvoiceTable fees={fees} loading={loadingChildren || loadingFees} error={error} onRetry={loadFees} onPay={payInvoice} onViewReceipt={receipt} showStudent={false} />
+          <InvoiceTable fees={fees} loading={loadingChildren || loadingFees} error={error} onRetry={loadFees} onViewReceipt={receipt} showStudent={false} />
         </section>
       </div>
     </main>

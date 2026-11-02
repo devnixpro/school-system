@@ -17,25 +17,27 @@ const currentMonth = () => new Date().toISOString().slice(0, 7); // YYYY-MM
 export default function ChildAttendancePage() {
   const { childList, selectedId, select, loading, error } = useSelectedChild();
   const [month, setMonth] = useState(currentMonth());
-  const [data, setData] = useState(null);
-  const [fetchError, setFetchError] = useState('');
+  const [response, setResponse] = useState(null);
 
   useEffect(() => {
     if (!selectedId) return;
     let cancelled = false;
-    setData(null);
-    setFetchError('');
     parentService
       .getAttendance(selectedId, month)
-      .then((d) => !cancelled && setData(d))
-      .catch((e) => !cancelled && setFetchError(e.message));
+      .then((data) => !cancelled && setResponse({ childId: selectedId, data, error: '' }))
+      .catch((error) => !cancelled && setResponse({ childId: selectedId, data: null, error: error.message }));
     return () => {
       cancelled = true;
     };
   }, [selectedId, month]);
 
+  const currentResponse = response?.childId === selectedId ? response : null;
+  const data = currentResponse?.data || null;
+  const fetchError = currentResponse?.error || '';
+
   if (loading) return <p className="p-6 text-slate-500">Loading...</p>;
   if (error) return <p className="p-6 text-red-600">{error}</p>;
+  if (!childList.length) return <p className="p-6 text-slate-600">No children are linked to this parent account yet.</p>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">

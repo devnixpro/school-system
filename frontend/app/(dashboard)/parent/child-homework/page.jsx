@@ -7,25 +7,27 @@ import { parentService } from '@/services/parentService';
 
 export default function ChildHomeworkPage() {
   const { childList, selectedId, select, loading, error } = useSelectedChild();
-  const [homework, setHomework] = useState(null);
-  const [fetchError, setFetchError] = useState('');
+  const [response, setResponse] = useState(null);
 
   useEffect(() => {
     if (!selectedId) return;
     let cancelled = false;
-    setHomework(null);
-    setFetchError('');
     parentService
       .getHomework(selectedId)
-      .then((d) => !cancelled && setHomework(d))
-      .catch((e) => !cancelled && setFetchError(e.message));
+      .then((data) => !cancelled && setResponse({ childId: selectedId, data, error: '' }))
+      .catch((error) => !cancelled && setResponse({ childId: selectedId, data: null, error: error.message }));
     return () => {
       cancelled = true;
     };
   }, [selectedId]);
 
+  const currentResponse = response?.childId === selectedId ? response : null;
+  const homework = currentResponse?.data || null;
+  const fetchError = currentResponse?.error || '';
+
   if (loading) return <p className="p-6 text-slate-500">Loading...</p>;
   if (error) return <p className="p-6 text-red-600">{error}</p>;
+  if (!childList.length) return <p className="p-6 text-slate-600">No children are linked to this parent account yet.</p>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">

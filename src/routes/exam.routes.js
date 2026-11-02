@@ -17,9 +17,9 @@ const { authorize } = require('../middleware/role.middleware');
 router.use(protect);
 
 // Exams CRUD
-router.get('/', getExams);
+router.get('/', authorize('admin', 'teacher', 'student', 'superadmin'), getExams);
 router.post('/', authorize('admin', 'superadmin'), createExam);
-router.get('/:id', getExamById);
+router.get('/:id', authorize('admin', 'teacher', 'student', 'superadmin'), getExamById);
 router.put('/:id', authorize('admin', 'superadmin'), updateExam);
 router.delete('/:id', authorize('admin', 'superadmin'), deleteExam);
 
