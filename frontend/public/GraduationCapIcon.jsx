@@ -42,7 +42,7 @@ export const GraduationCapIcon = ({ className = "w-6 h-6" }) => {
         strokeWidth="3.5"
         strokeLinecap="round"
       />
-      
+
       <circle cx="80" cy="62" r="4.5" fill="#38BDF8" />
     </svg>
   );

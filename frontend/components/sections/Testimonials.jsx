@@ -27,7 +27,7 @@ function TestimonialCard({ initials, name, role, quote }) {
     <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100 flex flex-col justify-between space-y-6">
       <div className="space-y-4">
         <StarRating />
-        <p className="text-gray-700 text-sm italic leading-relaxed">"{quote}"</p>
+        <p className="text-gray-700 text-sm italic leading-relaxed">&ldquo;{quote}&rdquo;</p>
       </div>
       <div className="flex items-center space-x-3 pt-4 border-t border-gray-200">
         <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm">

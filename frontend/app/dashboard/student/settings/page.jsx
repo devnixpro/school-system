@@ -53,7 +53,7 @@ export default function SettingsPage() {
           <button className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition">
             Cancel
           </button>
-          <button 
+          <button
             onClick={handleSave}
             className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-[#1B63E0] hover:bg-[#1552BD] rounded-xl shadow-md shadow-blue-500/20 transition"
           >
@@ -65,11 +65,11 @@ export default function SettingsPage() {
       {/* Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <SettingsSidebar 
-          profile={profile} 
-          sidebarNavItems={sidebarNavItems} 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
+        <SettingsSidebar
+          profile={profile}
+          sidebarNavItems={sidebarNavItems}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
         />
 
         {/* Dynamic Content Area */}

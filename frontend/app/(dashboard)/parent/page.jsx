@@ -1,7 +1,7 @@
 'use client';
 
-import ParentPortal from '@/components/parent-portal/ParentPortal';
+import ParentDashboard from '@/components/parent/ParentDashboard';
 
 export default function ParentDashboardPage() {
-  return <ParentPortal />;
+  return <ParentDashboard />;
 }

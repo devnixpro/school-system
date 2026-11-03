@@ -17,14 +17,14 @@ router.use(protect);
 router
   .route('/')
   .post(authorize('admin'), createTeacher)
-  .get(getAllTeachers);
+  .get(authorize('superadmin', 'admin', 'teacher', 'student'), getAllTeachers);
 
 // @route  GET    /api/teachers/:id  - Get single teacher
 // @route  PUT    /api/teachers/:id  - Update teacher (admin only)
 // @route  DELETE /api/teachers/:id  - Delete teacher (admin only)
 router
   .route('/:id')
-  .get(getTeacherById)
+  .get(authorize('superadmin', 'admin', 'teacher', 'student'), getTeacherById)
   .put(authorize('admin'), updateTeacher)
   .delete(authorize('admin'), deleteTeacher);
 

@@ -65,9 +65,12 @@ export default function Header({ isCollapsed, setIsCollapsed }) {
             {loading ? (
               <div className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
             ) : user?.avatarUrl ? (
-              <img
+              <Image
                 src={user.avatarUrl}
                 alt={user.name || "User"}
+                width={36}
+                height={36}
+                unoptimized
                 className="w-full h-full object-cover"
               />
             ) : (

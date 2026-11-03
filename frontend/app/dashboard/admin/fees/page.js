@@ -21,17 +21,13 @@ export default function AdminFeesPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await feeService.list({ ...filters, limit: 100 });
-      setFees(res.data || []);
-    } catch {
-      setFees([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [filters.status, filters.month]);
+  const load = useCallback(() => {
+    feeService
+      .list({ status: filters.status, month: filters.month, limit: 100 })
+      .then((res) => setFees(res.data || []))
+      .catch(() => setFees([]))
+      .finally(() => setLoading(false));
+  }, [filters.month, filters.status]);
 
   useEffect(() => {
     load();
@@ -201,12 +197,15 @@ export default function AdminFeesPage() {
         )}
       </div>
 
-      <FeePaymentModal
-        isOpen={!!selected}
-        onClose={() => setSelected(null)}
-        fee={selected}
-        onConfirm={handlePay}
-      />
+      {selected && (
+        <FeePaymentModal
+          key={selected._id}
+          isOpen
+          onClose={() => setSelected(null)}
+          fee={selected}
+          onConfirm={handlePay}
+        />
+      )}
 
       {toast && (
         <div

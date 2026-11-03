@@ -5,6 +5,7 @@ const EMPTY = {
   subject: "",
   examType: "Midterm",
   className: "",
+  section: "",
   date: "",
   startTime: "",
   duration: 60,
@@ -12,8 +13,13 @@ const EMPTY = {
 };
 
 export default function ExamForm({ initial, onClose, onSubmit }) {
-  const [form, setForm] = useState(initial || EMPTY);
+  const [form, setForm] = useState(initial ? {
+    ...initial,
+    date: initial.date ? new Date(initial.date).toISOString().slice(0, 10) : "",
+    section: initial.section || "",
+  } : EMPTY);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const isEdit = Boolean(initial?._id);
 
   const set = (key) => (e) =>
@@ -22,9 +28,12 @@ export default function ExamForm({ initial, onClose, onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setError("");
     try {
       await onSubmit(form);
       onClose();
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || requestError.message || "Unable to save exam.");
     } finally {
       setSaving(false);
     }
@@ -39,6 +48,7 @@ export default function ExamForm({ initial, onClose, onSubmit }) {
         </header>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
               <label className="text-xs font-semibold text-gray-600">Subject</label>
@@ -57,6 +67,12 @@ export default function ExamForm({ initial, onClose, onSubmit }) {
             <div>
               <label className="text-xs font-semibold text-gray-600">Class</label>
               <input required value={form.className} onChange={set("className")} placeholder="Grade 9 - A"
+                className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-gray-600">Section (optional)</label>
+              <input value={form.section || ""} onChange={set("section")} placeholder="A"
                 className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue" />
             </div>
 

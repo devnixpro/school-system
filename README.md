@@ -120,6 +120,26 @@ npm start
 | GET | `/api/attendance/summary/:studentId` | Student attendance summary | Private |
 | PUT | `/api/attendance/:id` | Update attendance record | Admin, Teacher |
 
+### 👪 Parent portal
+
+Admins create parent credentials and link active students with
+`POST /api/admin/parents` using `{ "name", "email", "password", "studentIds": ["student-id"] }`.
+Parents sign in at `/login`; the frontend routes parent accounts to `/parent`.
+Parent APIs only return data for students linked to the authenticated parent:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/parent/children` | List linked children |
+| GET | `/api/parent/children/:childId/summary` | Attendance, fee, homework, and exam summary |
+| GET | `/api/parent/children/:childId/attendance?month=YYYY-MM` | Monthly attendance |
+| GET | `/api/parent/children/:childId/results` | Published exam results |
+| GET | `/api/parent/children/:childId/fees` | Child invoices |
+| GET | `/api/parent/children/:childId/fees/:feeId/receipt` | Download a child invoice receipt |
+| GET | `/api/parent/children/:childId/homework` | Assignments for the child's class and section |
+
+Admins manage exam schedules/results at `/api/exams`; admins and teachers manage
+class homework at `/api/homework`. Exam results are published per student.
+
 ---
 
 ## 🔑 Authentication
@@ -165,3 +185,21 @@ git merge upstream/main
 - GitHub: [@hafizshayanahmed1995](https://github.com/hafizshayanahmed1995)
 - Email: hafizshayanahmed1995@gmail.com
 - Branch: `shayan`
+
+## Run the full-stack applications
+
+The current full-stack project is split into `backend/` and `frontend/`. Install
+Node.js 18+ and start a local MongoDB instance before running the apps.
+
+1. In `backend/`, run `npm install`, copy `.env.example` to `.env`, and set a
+   private `JWT_SECRET`. Keep the example local MongoDB URI if MongoDB is
+   running on this computer. Start the API with `npm run dev`; it listens on
+   `http://localhost:5000`.
+2. In a separate terminal, go to `frontend/`, run `npm install`, copy
+   `.env.example` to `.env.local`, then start the web app with `npm run dev`.
+   Open `http://localhost:3000`.
+
+To run the isolated parent API end-to-end test, run `npm run test:parent-e2e`
+from `backend/` while local MongoDB is running. It creates and removes its own
+temporary database. Do not share `.env` files or use production credentials
+for local testing.

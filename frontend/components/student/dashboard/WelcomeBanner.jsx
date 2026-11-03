@@ -30,7 +30,7 @@ export default function WelcomeBanner() {
 
   return (
     <div className="relative overflow-hidden rounded-2xl bg-[#031435] text-white shadow-xl min-h-[160px] flex items-center p-6 md:p-8">
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-right md:bg-center z-0"
         style={{ backgroundImage: "url('/welcom banner.jpg')" }}
       />
@@ -48,7 +48,7 @@ export default function WelcomeBanner() {
             {user?.name || "Admin User"} <span className="inline-block text-2xl md:text-3xl">👋</span>
           </h1>
           <p className="text-xs md:text-sm text-slate-300 font-normal pt-0.5">
-            Here's what's happening in your classes today.
+            Here&apos;s what&apos;s happening in your classes today.
           </p>
 
           {/* Date & Time Bar */}
@@ -57,7 +57,7 @@ export default function WelcomeBanner() {
               <Calendar className="w-4 h-4 text-white opacity-90" />
               <span>{formattedDate}</span>
             </div>
-            
+
             <span className="text-slate-400 font-light">|</span>
 
             <div className="flex items-center gap-2">

@@ -3,12 +3,12 @@
 import React from "react";
 import { Download, Calendar, Filter } from "lucide-react";
 
-export default function TimetableHeader({ 
-  selectedDay, 
-  setSelectedDay, 
-  viewMode, 
-  setViewMode, 
-  days 
+export default function TimetableHeader({
+  selectedDay,
+  setSelectedDay,
+  viewMode,
+  setViewMode,
+  days
 }) {
   return (
     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
