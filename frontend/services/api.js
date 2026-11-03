@@ -6,15 +6,16 @@ const api = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 15000,
+  withCredentials: true, // <-- important for cookies
 });
 
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
-    if (token) config.headers.Authorization = "Bearer " + token;
-  }
-  return config;
-});
+// api.interceptors.request.use((config) => {
+//   if (typeof window !== "undefined") {
+//     const token = localStorage.getItem("token");
+//     if (token) config.headers.Authorization = "Bearer " + token;
+//   }
+//   return config;
+// });
 
 export default api;
 export { BASE_URL };

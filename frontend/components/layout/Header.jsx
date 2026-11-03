@@ -4,15 +4,19 @@ import { useState, useEffect } from 'react';
 import { NAV_LINKS } from '@/data/navigation';
 import { useModal } from '@/context/ModalContext';
 import { useScrollTo } from '@/hooks/useScrollTo';
+import { useAuth } from '@/context/AuthContext'; // 👈 AuthContext import kiya
 import Logo from './Logo';
 import MobileMenu from './MobileMenu';
 import Button from '@/components/ui/Button';
+import Link from 'next/link';
 
 export default function Header() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
   const { openModal } = useModal();
   const { scrollToSection } = useScrollTo();
+  const { user, loading, logout } = useAuth(); // 👈 Auth context se user, loading aur logout nikal liya
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
@@ -39,25 +43,52 @@ export default function Header() {
             <button
               key={link.id}
               onClick={() => handleNavClick(link.id)}
-              className="hover:text-blue-600 transition-colors"
+              className="hover:text-blue-600 transition-colors cursor-pointer"
             >
               {link.label}
             </button>
           ))}
         </nav>
 
+        {/* Dynamic Buttons based on Auth State */}
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" size="sm" onClick={() => openModal('Login')}>
-            Login
-          </Button>
-          <Button variant="primary" size="md" onClick={() => openModal('Create Demo')}>
-            Create Demo
-          </Button>
+          {loading ? (
+            // Jab tak session check ho raha hai, chota sa loader ya blank space dikha dein
+            <div className="w-20 h-8 bg-gray-100 animate-pulse rounded-xl" />
+          ) : user ? (
+            <>
+              {/* Logout Button */}
+              <Button variant="ghost" size="sm" onClick={logout}>
+                Logout
+              </Button>
+              {/* Dashboard Button */}
+              <Link href="/dashboard/admin">
+                <Button variant="primary" size="md">
+                  Dashboard
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              {/* Login Button */}
+              <Link href="/login">
+                <Button variant="ghost" size="sm">
+                  Login
+                </Button>
+              </Link>
+              {/* Create Demo Button */}
+              <Link href="/onboarding">
+              <Button variant="primary" size="md">
+                Get Started
+              </Button>
+              </Link>
+            </>
+          )}
         </div>
 
         <button
           onClick={() => setIsMobileOpen((v) => !v)}
-          className="md:hidden text-gray-700 p-2 focus:outline-none"
+          className="md:hidden text-gray-700 p-2 focus:outline-none cursor-pointer"
           aria-label="Toggle menu"
         >
           <i className={`fa-solid ${isMobileOpen ? 'fa-xmark' : 'fa-bars'} text-xl`} />
@@ -68,8 +99,8 @@ export default function Header() {
         isOpen={isMobileOpen}
         links={NAV_LINKS}
         onLinkClick={handleNavClick}
-        onLogin={() => { setIsMobileOpen(false); openModal('Login'); }}
-        onDemo={() => { setIsMobileOpen(false); openModal('Create Demo'); }}
+        onLogin={user ? logout : () => { setIsMobileOpen(false); openModal('Login'); }}
+        onDemo={() => { setIsMobileOpen(false); }}
       />
     </header>
   );

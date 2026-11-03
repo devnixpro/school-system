@@ -21,21 +21,18 @@ export default function StudentsPage() {
     const fetchStudents = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await api.get("/students");
         
-        console.log("API Response:", response); // check data
-    
-
-        // API response handel structure
         let studentsData = [];
-        if (Array.isArray(response)) {
-          studentsData = response;
-        } else if (Array.isArray(response?.data)) {
-          studentsData = response.data;
-        } else if (Array.isArray(response?.data?.students)) {
-          studentsData = response.data.students;
-        } else if (Array.isArray(response?.students)) {
-          studentsData = response.students;
+        const resData = response?.data || response;
+
+        if (Array.isArray(resData)) {
+          studentsData = resData;
+        } else if (Array.isArray(resData?.students)) {
+          studentsData = resData.students;
+        } else if (Array.isArray(resData?.data)) {
+          studentsData = resData.data;
         }
 
         setStudents(studentsData);
@@ -50,7 +47,6 @@ export default function StudentsPage() {
     fetchStudents();
   }, []);
 
-  // Safety check: If the students array doesn't exist, an empty array will be used so .filter doesn't throw an error.
   const safeStudents = Array.isArray(students) ? students : [];
 
   // Filter Logic
@@ -69,7 +65,7 @@ export default function StudentsPage() {
   });
 
   return (
-    <div className="p-6 bg-[#090a0f] min-h-screen text-slate-100 space-y-6">
+    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 space-y-6">
       <StudentsHeader />
       <StudentsStats studentsCount={safeStudents.length} />
       
@@ -83,12 +79,12 @@ export default function StudentsPage() {
       />
 
       {loading ? (
-        <div className="bg-[#11131f] rounded-2xl border border-slate-800/80 p-12 flex flex-col items-center justify-center gap-3">
-          <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-xs text-slate-400">Loading students records...</p>
+        <div className="bg-white rounded-2xl border border-slate-200 p-12 flex flex-col items-center justify-center gap-3 shadow-sm">
+          <div className="w-8 h-8 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-xs text-slate-500">Loading students records...</p>
         </div>
       ) : error ? (
-        <div className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-6 text-center text-rose-400 text-xs">
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-center text-rose-600 text-xs shadow-sm">
           {error}
         </div>
       ) : (

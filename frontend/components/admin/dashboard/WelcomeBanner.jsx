@@ -1,8 +1,33 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext'; // 👈 AuthContext import kiya
 
 export default function WelcomeBanner() {
+  const { user } = useAuth(); // 👈 Logged-in user ki details nikaali
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  // Live clock update ke liye
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format Date (e.g., Tuesday, 27 October 2026)
+  const formattedDate = currentDateTime.toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  // Format Time (e.g., 10:24 AM)
+  const formattedTime = currentDateTime.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
   return (
     <div className="relative overflow-hidden rounded-2xl bg-[#031435] text-white shadow-xl min-h-[160px] flex items-center p-6 md:p-8">
       <div 
@@ -20,7 +45,7 @@ export default function WelcomeBanner() {
             Welcome Back,
           </p>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-2 text-white">
-            Zoya Ali <span className="inline-block text-2xl md:text-3xl">👋</span>
+            {user?.name || "Admin User"} <span className="inline-block text-2xl md:text-3xl">👋</span>
           </h1>
           <p className="text-xs md:text-sm text-slate-300 font-normal pt-0.5">
             Here's what's happening in your School today.
@@ -30,20 +55,20 @@ export default function WelcomeBanner() {
           <div className="flex items-center gap-3 pt-3 text-xs md:text-sm text-slate-200 font-medium">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-white opacity-90" />
-              <span>Tuesday, 17 June 2025</span>
+              <span>{formattedDate}</span>
             </div>
             
             <span className="text-slate-400 font-light">|</span>
 
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-white opacity-90" />
-              <span>10:24 AM</span>
+              <span>{formattedTime}</span>
             </div>
           </div>
         </div>
 
         {/* Right Side: School Logo & Tagline */}
-        <div className="flex items-center gap-3 self-end md:self-center bg-black/10 p-2 px-3 rounded-xl  md:border-none">
+        <div className="flex items-center gap-3 self-end md:self-center bg-black/10 p-2 px-3 rounded-xl md:border-none">
           {/* Logo Crest Icon */}
           <div className="w-10 h-10 flex items-center justify-center">
             <svg viewBox="0 0 24 24" className="w-9 h-9 text-white" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -54,10 +79,10 @@ export default function WelcomeBanner() {
           {/* School Name & Tagline */}
           <div className="text-left">
             <h2 className="font-bold text-base md:text-lg tracking-wide leading-tight text-white">
-              Beaconhouse School
+              {user?.school?.name || user?.schoolName || "DevNixEdu Academy"}
             </h2>
-            <p className="text-white md:text-xs text-slate-300 tracking-wider font-light mt-0.5">
-              Herre &nbsp;|&nbsp; Grow &nbsp;|&nbsp; Succeed
+            <p className="text-xs text-slate-300 tracking-wider font-light mt-0.5">
+              Learn &nbsp;|&nbsp; Grow &nbsp;|&nbsp; Succeed
             </p>
           </div>
         </div>

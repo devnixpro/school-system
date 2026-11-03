@@ -27,6 +27,12 @@ const teacherSchema = new mongoose.Schema(
       required: [true, 'Subject is required'],
       trim: true,
     },
+    school: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'School',
+      required: [true, 'School reference is required'],
+      index: true,
+    },
     qualification: {
       type: String,
       trim: true,

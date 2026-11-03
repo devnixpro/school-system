@@ -1,11 +1,16 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Protect routes - verify JWT token
+// Protect routes - verify JWT token (Supports both Cookies and Bearer Headers)
 const protect = async (req, res, next) => {
   let token;
 
-  if (
+  // 1. Check token in cookies (primary, since controller uses res.cookie)
+  if (req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  } 
+  // 2. Fallback: Check Authorization header if cookie is missing
+  else if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
