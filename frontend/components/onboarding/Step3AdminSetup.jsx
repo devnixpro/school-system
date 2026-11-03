@@ -1,7 +1,9 @@
-import React from 'react';
-import { User, Mail, Phone, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Mail, Phone, Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export const Step3AdminSetup = ({ formData, onChange, errors }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="space-y-5">
       <div>
@@ -48,6 +50,37 @@ export const Step3AdminSetup = ({ formData, onChange, errors }) => {
             />
           </div>
           {errors?.adminEmail && <p className="mt-1 text-[11px] text-red-500 font-medium">{errors.adminEmail}</p>}
+        </div>
+
+        {/* Admin Password with Eye Toggle */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+            Admin Password *
+          </label>
+          <div className="relative">
+            <Lock className={`w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 ${errors?.adminPassword ? 'text-red-400' : 'text-gray-400'}`} />
+            <input 
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={formData.adminPassword || ''}
+              onChange={(e) => onChange('adminPassword', e.target.value)}
+              className={`w-full pl-10 pr-12 py-2.5 bg-gray-50 border rounded-xl text-sm transition-all focus:bg-white focus:outline-none ${
+                errors?.adminPassword ? 'border-red-500 focus:ring-2 focus:ring-red-500/20' : 'border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600'
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+          {errors?.adminPassword && <p className="mt-1 text-[11px] text-red-500 font-medium">{errors.adminPassword}</p>}
         </div>
 
         {/* Admin Phone */}

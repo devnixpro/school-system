@@ -2,52 +2,32 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Page change karne ke liye
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { redirectBasedOnRole } from "@/components/ProtectedRoute";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
-  // Backend connection ke liye naye states
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { login } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    try {
-      // Backend API ko call karna
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    const res = await login({ email, password });
 
-      const data = await response.json();
-
-      // Agar response theek nahi hai (jaise galat password)
-      if (!response.ok) {
-        throw new Error(data.message || "Invalid credentials");
-      }
-
-      // Success! Token save karein aur dashboard par bhejein
-      localStorage.setItem("token", data.token); // Token save kiya
-      localStorage.setItem("user", JSON.stringify(data.user)); // User data save kiya
-      
-      alert("Login Successful!");
-      
-      // Yahan aap role ke hisaab se redirect kar sakte hain (abhi ke liye superadmin par bhej rahe hain)
-      router.push("/superadmin"); 
-
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    if (res.success) {
+      // Login successful -> Role ke hisab se dashboard par bhej dein
+      redirectBasedOnRole(res.user.role, router);
+    } else {
+      setError(res.message);
       setLoading(false);
     }
   };
@@ -55,7 +35,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 px-4 py-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
-        {/* Logo / Title */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
             <span className="text-white text-2xl font-bold">D</span>
@@ -64,14 +43,12 @@ export default function LoginPage() {
           <p className="text-gray-500 mt-2 text-sm">Sign in to your portal</p>
         </div>
 
-        {/* Error Message Display */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg mb-4 text-center">
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 text-sm rounded-lg">
             {error}
           </div>
         )}
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -105,28 +82,19 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700"
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? (
+                  <i className="fa-solid fa-eye-slash text-base"></i>
+                ) : (
+                  <i className="fa-solid fa-eye text-base"></i>
+                )}
               </button>
             </div>
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
-              <input type="checkbox" className="rounded border-gray-300" />
-              Remember me
-            </label>
-            <Link
-              href="/forgot-password"
-              className="text-blue-600 hover:underline font-medium"
-            >
-              Forgot Password?
-            </Link>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition duration-200 shadow-md hover:shadow-lg disabled:bg-blue-400"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
@@ -136,6 +104,12 @@ export default function LoginPage() {
           Don't have an account?{" "}
           <Link href="/register" className="text-blue-600 hover:underline font-medium">
             Create one
+          </Link>
+        </p>
+
+        <p className="text-center text-xs text-gray-400 mt-6">
+          <Link href="/" className="hover:text-gray-600">
+            ← Back to Home
           </Link>
         </p>
       </div>

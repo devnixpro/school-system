@@ -17,7 +17,8 @@ import {
   ClipboardType,
   GraduationCap,
   Bell,
-  BarChart3
+  BarChart3,
+  UserGroup
 } from 'lucide-react';
 import api from '@/services/api';
 
@@ -30,8 +31,14 @@ const NAV_ITEMS = [
   { 
     name: 'Students', 
     subLabel: 'My Classes',
-    href: '/dashboard/', 
+    href: '/dashboard/admin/students', 
     icon: Users 
+  },
+  { 
+    name: 'Teachers', 
+    subLabel: 'My Classes',
+    href: '/dashboard/admin/teachers', 
+    icon: UserGroup 
   },
   { 
     name: 'Classes & Academics', 

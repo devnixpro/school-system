@@ -1,12 +1,12 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import { Search, Bell, MessageSquare, ChevronDown, User, Menu } from 'lucide-react';
 import Image from 'next/image';
-import Logo from '@/public/dashboardlogo.png'
+import Logo from '@/public/dashboardlogo.png';
+import { useAuth } from '@/context/AuthContext'; // 👈 AuthContext import kiya
 
 export default function Header({ isCollapsed, setIsCollapsed }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth(); // 👈 Context se user aur loading state nikaali
 
   return (
     <header className="h-16 bg-[#0f111a] border-b border-slate-800/80 px-6 flex items-center justify-between sticky top-0 z-40 w-full">
@@ -76,10 +76,10 @@ export default function Header({ isCollapsed, setIsCollapsed }) {
           </div>
           <div className="hidden sm:flex flex-col text-left">
             <span className="text-xs font-semibold text-slate-100 leading-tight">
-              {user?.name || "Zoya Ali"}
+              {user?.name || "Admin User"} {/* 👈 Fallback name agar user load na ho */}
             </span>
             <span className="text-[10px] text-slate-400 font-medium capitalize">
-              {user?.role || "Student"}
+              {user?.role || "Admin"} {/* 👈 Dynamic role */}
             </span>
           </div>
           <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block cursor-pointer" />

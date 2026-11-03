@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 const errorHandler = require('./middleware/errorHandler');
@@ -19,13 +20,20 @@ const timetableRoutes = require('./routes/timetableRoutes');
 const noticeRoutes = require('./routes/noticeRoutes');
 const syllabusRoutes = require('./routes/syllabusRoutes');
 const feeRoutes = require('./routes/feeRoutes');
-const examRoutes = require('./routes/exam.routes'); // Naya Exam Route import kiya
+const onboardingRoutes = require('./routes/onboardingRoutes');
+const examRoutes = require('./routes/exam.routes'); // Exam route imported
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true, // Allows Cookies and Authorization headers
+  })
+);
 app.use(express.json());
+app.use(cookieParser()); // Required for parsing cookies
 app.use(express.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV === 'development') {
@@ -49,7 +57,9 @@ app.get('/', (req, res) => {
       notices: '/api/notices',
       syllabus: '/api/syllabus',
       paymentGateways: '/api/payment-gateways',
-      exams: '/api/exams', // Naya Endpoint list mein add kiya
+      fees: '/api/fees',
+      onboarding: '/api/onboarding',
+      exams: '/api/exams', // Added to endpoint list
     },
   });
 });
@@ -69,7 +79,8 @@ app.use('/api/timetable', timetableRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/syllabus', syllabusRoutes);
 app.use('/api/fees', feeRoutes);
-app.use('/api/exams', examRoutes); // Naya Exam Route connect kiya
+app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/exams', examRoutes); // Exam route connected
 
 // 404 Handler
 app.use((req, res) => {

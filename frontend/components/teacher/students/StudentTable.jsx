@@ -2,10 +2,10 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 
 export default function StudentsTable({ students, totalCount }) {
   return (
-    <div className="bg-[#11131f] rounded-2xl border border-slate-800/80 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-slate-300">
-          <thead className="bg-[#161826] text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+        <table className="w-full text-left text-xs text-slate-700">
+          <thead className="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-wider border-b border-slate-200">
             <tr>
               <th className="p-4">Student</th>
               <th className="p-4">Roll No</th>
@@ -16,44 +16,44 @@ export default function StudentsTable({ students, totalCount }) {
               <th className="p-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60">
+          <tbody className="divide-y divide-slate-100">
             {students.length > 0 ? (
               students.map((student) => (
                 <tr
                   key={student.id}
-                  className="hover:bg-slate-800/30 transition-colors"
+                  className="hover:bg-slate-50/80 transition-colors"
                 >
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <img
                         src={student.avatar}
                         alt={student.name}
-                        className="w-9 h-9 rounded-full object-cover border border-slate-700"
+                        className="w-9 h-9 rounded-full object-cover border border-slate-200"
                       />
                       <div>
-                        <p className="font-semibold text-slate-100">
+                        <p className="font-semibold text-slate-900">
                           {student.name}
                         </p>
-                        <p className="text-[11px] text-slate-400">
+                        <p className="text-[11px] text-slate-500">
                           {student.email}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4 font-mono text-slate-300">
+                  <td className="p-4 font-mono text-slate-600">
                     #{student.rollNo}
                   </td>
                   <td className="p-4">
-                    <span className="bg-slate-800 text-slate-200 px-2.5 py-1 rounded-lg text-[11px] font-medium border border-slate-700/50">
+                    <span className="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-[11px] font-medium border border-slate-200">
                       {student.class}
                     </span>
                   </td>
-                  <td className="p-4 text-slate-400">
+                  <td className="p-4 text-slate-500">
                     {student.parentContact}
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-16 bg-slate-800 h-2 rounded-full overflow-hidden">
+                      <div className="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
                             parseInt(student.attendance) >= 90
@@ -65,7 +65,7 @@ export default function StudentsTable({ students, totalCount }) {
                           style={{ width: student.attendance }}
                         ></div>
                       </div>
-                      <span className="text-[11px] font-medium text-slate-300">
+                      <span className="text-[11px] font-medium text-slate-700">
                         {student.attendance}
                       </span>
                     </div>
@@ -74,15 +74,15 @@ export default function StudentsTable({ students, totalCount }) {
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold ${
                         student.status === "Active"
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                          ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                          : "bg-rose-50 text-rose-600 border border-rose-200"
                       }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
                           student.status === "Active"
-                            ? "bg-emerald-400"
-                            : "bg-rose-400"
+                            ? "bg-emerald-500"
+                            : "bg-rose-500"
                         }`}
                       ></span>
                       {student.status}
@@ -92,19 +92,19 @@ export default function StudentsTable({ students, totalCount }) {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         title="View Profile"
-                        className="p-1.5 text-slate-400 hover:text-sky-400 hover:bg-slate-800 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-sky-600 hover:bg-slate-100 rounded-lg transition-colors"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
                         title="Edit Student"
-                        className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-slate-800 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-slate-100 rounded-lg transition-colors"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
                         title="Delete"
-                        className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -116,7 +116,7 @@ export default function StudentsTable({ students, totalCount }) {
               <tr>
                 <td
                   colSpan="7"
-                  className="text-center py-8 text-slate-400 text-xs"
+                  className="text-center py-8 text-slate-500 text-xs"
                 >
                   No students found matching your search or filters.
                 </td>
@@ -127,19 +127,19 @@ export default function StudentsTable({ students, totalCount }) {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
+      <div className="p-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
         <p>
-          Showing <span className="font-semibold text-slate-200">{students.length}</span> of{" "}
-          <span className="font-semibold text-slate-200">{totalCount}</span> students
+          Showing <span className="font-semibold text-slate-800">{students.length}</span> of{" "}
+          <span className="font-semibold text-slate-800">{totalCount}</span> students
         </p>
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">
+          <button className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
             Previous
           </button>
-          <button className="px-3 py-1.5 rounded-lg bg-sky-500 text-white font-medium hover:bg-sky-600 transition-colors">
+          <button className="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-medium hover:bg-sky-500 transition-colors">
             1
           </button>
-          <button className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">
+          <button className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
             Next
           </button>
         </div>

@@ -1,7 +1,15 @@
 import React from 'react';
 import { Rocket, Sparkles, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export const Step4Success = ({ formData }) => {
+  const router = useRouter();
+
+  const handleGoToDashboard = () => {
+    // Admin dashboard par redirect karein (role-based router ya direct admin route)
+    router.push('/dashboard/admin'); 
+  };
+
   return (
     <div className="text-center py-6 space-y-5">
       <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50 animate-bounce">
@@ -34,7 +42,10 @@ export const Step4Success = ({ formData }) => {
         </div>
       </div>
 
-      <button className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+      <button 
+        onClick={handleGoToDashboard}
+        className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer"
+      >
         <Sparkles className="w-5 h-5" /> Go to Admin Dashboard <ArrowRight className="w-5 h-5" />
       </button>
     </div>

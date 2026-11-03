@@ -8,10 +8,12 @@ import HomeworkSubmissionsTable from '@/components/teacher/dashboard/HomeworkSub
 import QuickActions from '@/components/teacher/dashboard/QuickActions';
 import UpcomingEvents from '@/components/teacher/dashboard/UpcomingEvents';
 import RecentActivity from '@/components/teacher/dashboard/RecentActivity';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 export default function TeacherDashboard() {
   
   return (
+    <ProtectedRoute allowedRoles={["teacher"]}>
     <div className="min-h-screen bg-[#f4f6f9] text-gray-800 p-2 md:p-6 space-y-6">
       <WelcomeBanner />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -32,5 +34,6 @@ export default function TeacherDashboard() {
 
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
