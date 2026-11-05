@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { Search, Bell, MessageSquare, ChevronDown, User, Menu } from 'lucide-react';
+import Image from 'next/image';
 import Logo from '@/public/dashboardlogo.png'
 
 export default function Header({ isCollapsed, setIsCollapsed }) {
@@ -65,12 +65,9 @@ export default function Header({ isCollapsed, setIsCollapsed }) {
             {loading ? (
               <div className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
             ) : user?.avatarUrl ? (
-              <Image
+              <img
                 src={user.avatarUrl}
                 alt={user.name || "User"}
-                width={36}
-                height={36}
-                unoptimized
                 className="w-full h-full object-cover"
               />
             ) : (

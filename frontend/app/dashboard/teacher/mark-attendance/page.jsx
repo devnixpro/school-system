@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Save, CheckCircle2, XCircle, Clock, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import api from '@/services/api';
@@ -17,37 +17,39 @@ export default function MarkAttendancePage() {
   const [attendanceDate, setAttendanceDate] = useState('2026-09-27');
   const [students, setStudents] = useState([]);
   const [isExistingRecord, setIsExistingRecord] = useState(false);
-
-  const [loading, setLoading] = useState(true);
+  
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
 
   // GET API Calling
-  useEffect(() => {
-    let active = true;
-    api.get('/attendance', {
-      params: { classId: selectedClass, date: attendanceDate },
-    })
-      .then((response) => {
-        if (!active) return;
-        setError(null);
-        setStudents(response.data?.students || response.data || []);
-        setIsExistingRecord(response.data?.isExisting || false);
-      })
-      .catch((err) => {
-        if (active) {
-          setError(err.response?.data?.message || err.message || "Attendance data fetching error.");
-        }
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+  const fetchAttendance = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.get('/attendance', {
+        params: {
+          classId: selectedClass,
+          date: attendanceDate,
+        },
       });
 
-    return () => {
-      active = false;
-    };
+      const data = response.data?.students || response.data || [];
+      setStudents(data);
+      
+      setIsExistingRecord(response.data?.isExisting || false);
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || err.message || "Attendance data fetching error.";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   }, [selectedClass, attendanceDate]);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [fetchAttendance]);
 
   const handleAttendanceToggle = (id, newStatus) => {
     setStudents(prev =>

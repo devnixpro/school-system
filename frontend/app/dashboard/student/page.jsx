@@ -10,12 +10,12 @@ import UpcomingEvents from '@/components/student/dashboard/UpcomingEvents';
 import RecentActivity from '@/components/student/dashboard/RecentActivity';
 
 export default function StudentDashboard() {
-
+  
   return (
     <div className="min-h-screen bg-[#f4f6f9] text-gray-800 p-2 md:p-6 space-y-6">
       <WelcomeBanner />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
+        
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
           <MetricCards />
           <AnalyticsCharts />

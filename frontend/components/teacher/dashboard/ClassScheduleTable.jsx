@@ -16,7 +16,7 @@ export default function ClassScheduleTable() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-sky-600" />
-          <h3 className="text-xs font-bold text-slate-800">Today&apos;s Class Schedule</h3>
+          <h3 className="text-xs font-bold text-slate-800">Today's Class Schedule</h3>
         </div>
         <button className="text-[11px] text-sky-600 font-semibold hover:underline">View All</button>
       </div>
