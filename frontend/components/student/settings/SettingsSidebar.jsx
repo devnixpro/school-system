@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Camera, ChevronRight, Headphones } from "lucide-react";
 
 export default function SettingsSidebar({ profile, sidebarNavItems, activeTab, setActiveTab }) {
@@ -10,12 +9,9 @@ export default function SettingsSidebar({ profile, sidebarNavItems, activeTab, s
       {/* User Brief Card */}
       <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-center">
         <div className="relative w-24 h-24 mx-auto mb-4">
-          <Image
+          <img
             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=250&auto=format&fit=crop"
             alt={profile.fullName}
-            width={96}
-            height={96}
-            unoptimized
             className="w-full h-full object-cover rounded-full border-4 border-[#1B63E0]/10"
           />
           <button className="absolute bottom-0 right-0 p-2 bg-[#1B63E0] text-white rounded-full hover:bg-blue-700 shadow-sm transition">

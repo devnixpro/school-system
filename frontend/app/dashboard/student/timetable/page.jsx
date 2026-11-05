@@ -113,10 +113,10 @@ export default function TimetablePage() {
       {/* Main Content */}
       {!loading && !error && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
+          
           {/* Timetable Display Section */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-4">
-
+            
             {viewMode === "day" ? (
               <>
                 <DaySelector
@@ -151,10 +151,10 @@ export default function TimetablePage() {
 
           {/* Sidebar Info Cards */}
           <div className="lg:col-span-4 xl:col-span-3 space-y-6">
-
+            
             <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
               <h3 className="font-bold text-base text-[#0B1E36] border-b border-slate-100 pb-3">
-                Today&apos;s Overview
+                Today's Overview
               </h3>
 
               <div className="space-y-3">

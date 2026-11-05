@@ -12,37 +12,37 @@ const METHODS = [
 ];
 
 export default function FeePaymentModal({ isOpen, onClose, fee, onConfirm }) {
-  if (!isOpen || !fee) return null;
-  return (
-    <FeePaymentForm
-      fee={fee}
-      onClose={onClose}
-      onConfirm={onConfirm}
-    />
-  );
-}
-
-function FeePaymentForm({ fee, onClose, onConfirm }) {
   const [method, setMethod] = useState("cash");
   const [txnId, setTxnId] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
-    const focusTimer = setTimeout(() => {
-      modalRef.current?.querySelector("button")?.focus();
-    }, 50);
+    if (isOpen) {
+      setMethod("cash");
+      setTxnId("");
+      setSubmitting(false);
+      // Focus first interactive element for a11y
+      setTimeout(() => {
+        modalRef.current?.querySelector("button")?.focus();
+      }, 50);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
     const onKey = (e) => {
       if (e.key === "Escape") onClose?.();
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
-      clearTimeout(focusTimer);
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !fee) return null;
 
   const submit = async () => {
     setSubmitting(true);

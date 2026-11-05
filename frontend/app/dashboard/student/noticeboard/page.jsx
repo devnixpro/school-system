@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { noticeService } from "@/services/noticeService";
-import {
-  Megaphone,
-  Calendar,
-  User,
-  Search,
-  Loader2,
-  AlertCircle,
+import { 
+  Megaphone, 
+  Calendar, 
+  User, 
+  Search, 
+  Loader2, 
+  AlertCircle, 
   BellRing,
   AlertTriangle,
   Info
@@ -128,8 +128,8 @@ export default function NoticeboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredNotices.length > 0 ? (
             filteredNotices.map((notice) => (
-              <div
-                key={notice._id}
+              <div 
+                key={notice._id} 
                 className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col justify-between relative overflow-hidden group"
               >
                 {/* Accent Line */}

@@ -85,7 +85,7 @@ export default function SuperAdminDashboard() {
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
         <h1 className="text-3xl font-bold">Welcome back, Super Admin! 👋</h1>
         <p className="text-blue-100 mt-2">
-          Here&apos;s what&apos;s happening with your platform today.
+          Here's what's happening with your platform today.
         </p>
       </div>
 

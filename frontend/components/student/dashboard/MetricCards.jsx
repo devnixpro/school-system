@@ -1,14 +1,14 @@
 "use client";
 import React from 'react';
-import {
-  Star,
-  FileText,
-  CalendarDays,
-  Clock,
-  Receipt,
-  FileSpreadsheet,
-  AlertTriangle,
-  Calendar
+import { 
+  Star, 
+  FileText, 
+  CalendarDays, 
+  Clock, 
+  Receipt, 
+  FileSpreadsheet, 
+  AlertTriangle, 
+  Calendar 
 } from 'lucide-react';
 
 const METRICS = [

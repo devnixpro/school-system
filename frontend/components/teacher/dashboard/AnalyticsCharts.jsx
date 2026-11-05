@@ -76,7 +76,7 @@ export default function AnalyticsCharts() {
           <h3 className="text-xs font-bold text-slate-800">Class Grading</h3>
         </div>
 
-
+        
         <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 w-full max-w-md">
           {/* Main Content Area: Chart + Legend */}
           <div className="flex items-center justify-between gap-4 mt-2">
